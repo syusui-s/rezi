@@ -11,5 +11,16 @@
     "types": ["vite/client"],
     "noEmit": true,
     "isolatedModules": true
-  }
+  },
+  "include": [
+    "vite.config.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "./.eslintrc.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
