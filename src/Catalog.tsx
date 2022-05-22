@@ -19,8 +19,7 @@ const AmountCubes: Component<{ amount: Accessor<number> }> = (props) => (
   </div>
 );
 
-const CatalogItem = () => {
-};
+const CatalogItem = () => {};
 
 const Catalog: Component = () => {
   const [showCart, setShowCart] = createSignal(false);
@@ -55,14 +54,14 @@ const Catalog: Component = () => {
         </Link>
       }
     >
-      <div class="pb-48">
-        <div class="my-4 grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div class="pb-52">
+        <div class="my-4 grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2 md:gap-4">
           <For each={products()} fallback={<div>頒布物がまだ登録されていません</div>}>
             {(product) => {
               const amount = () => cart().find(product.id)?.amount ?? 0;
               return (
                 <div
-                  class="bg-white shadow-md py-2 px-4 hover:bg-zinc-50 rounded select-none cursor-pointer"
+                  class="bg-white shadow-md p-2 py-2 md:px-4 hover:bg-zinc-50 rounded select-none cursor-pointer"
                   role="button"
                   tabIndex="0"
                   onClick={() => {
@@ -121,12 +120,17 @@ const Catalog: Component = () => {
           </For>
         </div>
 
-        <div class="bg-white shadow-2xl">
-          {/*  container w-full xl:w-8/12 absolute bottom-0 */}
+        <div
+          class="bg-white container w-full xl:w-8/12 fixed bottom-0"
+          style="box-shadow: 0 -4px 10px rgba(0,0,0,0.2)"
+        >
           <div class="text-center">
             <Show when={countItems() > 0}>
-              <button onClick={() => setShowCart(!showCart())}>
-                {countItems()}個
+              <button
+                onClick={() => setShowCart(!showCart())}
+                class="bg-zinc-100 hover:bg-zinc-200 text-xl py-2 w-full"
+              >
+                <span>{countItems()}個 </span>
                 <Switch>
                   <Match when={showCart()}>
                     <span area-label="Show">▼</span>
@@ -139,7 +143,7 @@ const Catalog: Component = () => {
             </Show>
           </div>
           <Show when={showCart() && countItems() > 0}>
-            <div class="m-4 h-72 overflow-scroll">
+            <div class="m-4 overflow-scroll" style="max-height: 25vh;">
               <For each={cart().content()}>
                 {(cartItem) => {
                   const product = products().find((e) => e.id === cartItem.productId);
@@ -177,7 +181,7 @@ const Catalog: Component = () => {
               </For>
             </div>
           </Show>
-          <div class="flex p-4 items-end">
+          <div class="flex items-center shadow p-4 border-y">
             <div class="flex-auto">
               <div class="text-xl text-zinc-700 my-2">合計</div>
               <div class="text-5xl text-end">
@@ -187,8 +191,11 @@ const Catalog: Component = () => {
             <div class="basis-1/3 sm:basis-1/4 lg:basis-60 flex flex-col gap-2">
               <button
                 type="button"
-                onClick={() => clearCart()}
                 class="bg-zinc-500 hover:bg-zinc-600 text-white py-2 px-2 shadow-md"
+                onClick={() => {
+                  clearCart();
+                  setShowCart(false);
+                }}
               >
                 クリア
               </button>
