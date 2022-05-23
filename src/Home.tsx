@@ -4,7 +4,7 @@ import { Link } from 'solid-app-router';
 import AppLayout from './components/AppLayout';
 
 const Home: Component = () => (
-  <AppLayout title="ホーム">
+  <AppLayout titleElement="ホーム">
     <ul class="flex flex-col list-disc">
       <li>
         <Link href="/catalog" class="text-blue-500 underline">
@@ -12,8 +12,8 @@ const Home: Component = () => (
         </Link>
       </li>
       <li>
-        <Link href="/products/new" class="text-blue-500 underline">
-          頒布物追加
+        <Link href="/" class="text-blue-500 underline">
+          売上記録
         </Link>
       </li>
     </ul>

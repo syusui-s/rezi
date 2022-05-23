@@ -9,8 +9,8 @@ type UseCartProps = {
 
 type UseCart = {
   cart: Accessor<Cart>;
-  addToCart: (productId: string, amount?: number) => void;
-  removeFromCart: (productId: string, amount?: number) => void;
+  addToCart: (productId: string, quantity?: number) => void;
+  removeFromCart: (productId: string, quantity?: number) => void;
   clearCart: () => void;
   totalPrice: () => number;
 };
@@ -18,12 +18,12 @@ type UseCart = {
 const useCart = ({ products }: UseCartProps): UseCart => {
   const [cart, setCart] = createSignal<Cart>(Cart.empty());
 
-  const addToCart = (productId: string, amount = 1) => {
-    setCart((currentCart) => currentCart.add(productId, amount));
+  const addToCart = (productId: string, quantity = 1) => {
+    setCart((currentCart) => currentCart.add(productId, quantity));
   };
 
-  const removeFromCart = (productId: string, amount = 1) => {
-    setCart((currentCart) => currentCart.remove(productId, amount));
+  const removeFromCart = (productId: string, quantity = 1) => {
+    setCart((currentCart) => currentCart.remove(productId, quantity));
   };
 
   const clearCart = () => setCart(Cart.empty());
@@ -35,7 +35,7 @@ const useCart = ({ products }: UseCartProps): UseCart => {
         const product = products().find(({ id }) => id === cartItem.productId);
 
         if (!product) return acc;
-        return acc + product.price * cartItem.amount;
+        return acc + product.price * cartItem.quantity;
       }, 0);
   };
 

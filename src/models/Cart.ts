@@ -1,5 +1,8 @@
 import CartItem from './CartItem';
 
+/**
+ * カート
+ */
 export default class Cart {
   constructor(private items: Record<string, CartItem>) {}
 
@@ -7,12 +10,12 @@ export default class Cart {
     return new Cart({});
   }
 
-  add(productId: string, amount: number) {
+  add(productId: string, quantity: number) {
     const item = this.find(productId);
     const newItems = { ...this.items };
 
     if (item) {
-      newItems[productId] = item.addAmount(amount);
+      newItems[productId] = item.addQuantity(quantity);
     } else {
       newItems[productId] = CartItem.one(productId);
     }
@@ -20,17 +23,17 @@ export default class Cart {
     return new Cart(newItems);
   }
 
-  remove(productId: string, amount: number) {
+  remove(productId: string, quantity: number) {
     const item = this.find(productId);
     const newItems = { ...this.items };
 
     if (!item) throw new Error('Try to remove not added product');
 
-    const newItem = item.removeAmount(amount);
+    const newItem = item.removeQuantity(quantity);
 
     newItems[productId] = newItem;
     /*
-    if (newItem.amount > 0) {
+    if (newItem.quantity > 0) {
       newItems[productId] = newItem;
     } else {
       delete newItems[productId];

@@ -25,9 +25,9 @@ const ManageProduct: Component = () => {
 
   return (
     <AppLayout
-      title="頒布物登録"
+      titleElement="頒布物登録"
       prevElement={
-        <Link href="/" class="text-xl font-bold text-blue-500 hover:text-blue-600">
+        <Link href="/" class="navigationButton">
           &lt; ホーム
         </Link>
       }
