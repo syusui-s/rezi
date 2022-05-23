@@ -1,13 +1,13 @@
 import type { Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
-import Product from './models/Product';
-import AppLayout from './components/AppLayout';
-import ProductForm from './components/ProductForm';
-import useProducts from './useProducts';
+import Product from '@/models/Product';
+import AppLayout from '@/components/AppLayout';
+import ProductForm from '@/components/ProductForm';
+import useProducts from '@/useProducts';
 
 const ManageProduct: Component = () => {
-  const { addProduct, removeProduct } = useProducts();
+  const { addProduct } = useProducts();
 
   const handleProductFormSubmit = ({
     name,

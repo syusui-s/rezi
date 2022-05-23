@@ -1,8 +1,8 @@
 import type { Component } from 'solid-js';
 import { Routes, Route, Navigate, Link } from 'solid-app-router';
 
-import Catalog from './Catalog';
-import ManageProduct from './ManageProduct';
+import Catalog from '@/pages/Catalog';
+import ManageProduct from '@/pages/ManageProduct';
 
 const NotFound: Component = () => (
   <div>

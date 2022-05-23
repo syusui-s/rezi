@@ -1,11 +1,11 @@
-import { Accessor, Component, createSignal, For, Show, Switch, Match } from 'solid-js';
+import { createSignal, For, Show } from 'solid-js';
+import type { Accessor, Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
-import AppLayout from './components/AppLayout';
-import useCart from './useCart';
-import useProducts from './useProducts';
-import Product from './models/Product';
-import separateNumber from './utils/separateNumber';
+import AppLayout from '@/components/AppLayout';
+import useCart from '@/useCart';
+import useProducts from '@/useProducts';
+import separateNumber from '@/utils/separateNumber';
 
 const PriceDisplay: Component<{ price: Accessor<number> }> = (props) => (
   <span class="font-mono">&yen;{separateNumber(props.price())}</span>

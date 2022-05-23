@@ -7,4 +7,9 @@ export default defineConfig({
     target: 'esnext',
     polyfillDynamicImport: false,
   },
+  resolve: {
+    alias: {
+      '@/': `${__dirname}/src/`,
+    },
+  },
 });
