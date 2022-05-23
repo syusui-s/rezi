@@ -13,6 +13,7 @@ type UseCart = {
   removeFromCart: (productId: string, quantity?: number) => void;
   clearCart: () => void;
   totalPrice: () => number;
+  totalQuantity: () => number;
 };
 
 const useCart = ({ products }: UseCartProps): UseCart => {
@@ -28,8 +29,13 @@ const useCart = ({ products }: UseCartProps): UseCart => {
 
   const clearCart = () => setCart(Cart.empty());
 
-  const totalPrice = () => {
-    return cart()
+  const totalQuantity = () =>
+    cart()
+      .content()
+      .reduce((acc, e) => acc + e.quantity, 0);
+
+  const totalPrice = () =>
+    cart()
       .content()
       .reduce((acc, cartItem) => {
         const product = products().find(({ id }) => id === cartItem.productId);
@@ -37,9 +43,8 @@ const useCart = ({ products }: UseCartProps): UseCart => {
         if (!product) return acc;
         return acc + product.price * cartItem.quantity;
       }, 0);
-  };
 
-  return { cart, addToCart, removeFromCart, clearCart, totalPrice };
+  return { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity };
 };
 
 export default useCart;

@@ -27,8 +27,8 @@ const ManageProduct: Component = () => {
     <AppLayout
       titleElement="頒布物登録"
       prevElement={
-        <Link href="/" class="navigationButton">
-          &lt; ホーム
+        <Link href="/catalog" class="navigationButton">
+          ←
         </Link>
       }
     >

@@ -1,7 +1,6 @@
 import type { Component } from 'solid-js';
-import { Routes, Route, Link } from 'solid-app-router';
+import { Routes, Route, Navigate, Link } from 'solid-app-router';
 
-import Home from './Home';
 import Catalog from './Catalog';
 import ManageProduct from './ManageProduct';
 
@@ -18,7 +17,9 @@ const App: Component = () => (
   <Routes>
     <Route path="/catalog" element={<Catalog />} />
     <Route path="/products/new" element={<ManageProduct />} />
-    <Route path="/" element={<Home />} />
+    <Route path="/">
+      <Navigate href="/catalog" />
+    </Route>
     <Route path="/*" element={<NotFound />} />
   </Routes>
 );

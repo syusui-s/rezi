@@ -29,38 +29,29 @@ const CatalogItem = () => {};
 const Catalog: Component = () => {
   const [showCart, setShowCart] = createSignal(false);
   const { products, addProduct, removeProduct } = useProducts();
-  const { cart, addToCart, removeFromCart, clearCart, totalPrice } = useCart({ products });
-
-  const countItems = () =>
-    cart()
-      .content()
-      .reduce((acc, e) => acc + e.quantity, 0);
-
-  const handleProductFormSubmit = ({
-    name,
-    price,
-    imageUrl,
-  }: {
-    name: string;
-    price: number;
-    imageUrl?: string;
-  }) => {
-    const id = Math.random().toString();
-    const product = new Product(id, name, price, imageUrl);
-    addProduct(product);
-  };
+  const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
+    products,
+  });
 
   return (
     <AppLayout
-      titleElement="カタログ"
-      prevElement={
-        <Link href="/" class="navigationButton">
-          &lt; ホーム
-        </Link>
-      }
+      titleElement="カタログ ▼"
       nextElement={
         <Link href="/products/new" class="navigationButton">
-          頒布物追加
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            view-box="0 0 24 24"
+            stroke="currentColor"
+            stroke-width={2}
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
+            />
+          </svg>
         </Link>
       }
     >
@@ -83,7 +74,7 @@ const Catalog: Component = () => {
                   <div class="flex h-8 items-center pr-2 border-b">
                     <div class="flex items-center">
                       <button
-                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200"
+                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 text-mono"
                         onClick={() => removeFromCart(cartItem.productId)}
                       >
                         -
@@ -92,7 +83,7 @@ const Catalog: Component = () => {
                         {cartItem.quantity}
                       </div>
                       <button
-                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200"
+                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 text-mono"
                         onClick={() => addToCart(cartItem.productId)}
                       >
                         +
@@ -111,12 +102,12 @@ const Catalog: Component = () => {
           </div>
           <div class="flex flex-col items-end justify-end md:px-2 md:h-full md:basis-1/3">
             <div class="flex items-center gap-4 md:gap-0 md:flex-col md:items-end py-2">
-              <div class="text-lg md:text-base text-zinc-700">{countItems()} 点</div>
+              <div class="text-lg md:text-base text-zinc-700">{totalQuantity()} 点</div>
               <div class="text-xl md:text-5xl text-end">
                 <PriceDisplay price={totalPrice} />
               </div>
             </div>
-            <div class="flex items-center justify-between gap-2 w-full h-10 sm:h-12">
+            <div class="flex items-center justify-between gap-2 w-full h-7 sm:h-12">
               <button
                 type="button"
                 class="bg-zinc-500 hover:bg-zinc-600 text-white text-base w-16 h-full sm:p-2 shadow"
