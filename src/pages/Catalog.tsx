@@ -5,10 +5,10 @@ import { Link } from 'solid-app-router';
 import AppLayout from '@/components/AppLayout';
 import useCart from '@/useCart';
 import useProducts from '@/useProducts';
-import separateNumber from '@/utils/separateNumber';
+import commafy from '@/utils/commafy';
 
 const PriceDisplay: Component<{ price: Accessor<number> }> = (props) => (
-  <span class="font-mono">&yen;{separateNumber(props.price())}</span>
+  <span class="font-mono">&yen;{commafy(props.price())}</span>
 );
 
 const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
@@ -176,9 +176,7 @@ const Catalog: Component = () => {
                   <div class="text-xs md:text-base overflow-hidden whitespace-nowrap text-ellipsis">
                     {product.name}
                   </div>
-                  <div class="text-base font-bold font-mono">
-                    &yen;{separateNumber(product.price)}
-                  </div>
+                  <div class="text-base font-bold font-mono">&yen;{commafy(product.price)}</div>
                   <div>
                     <button
                       type="button"

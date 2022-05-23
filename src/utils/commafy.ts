@@ -1,3 +1,9 @@
+/**
+ * Separate number every three digit like 12,345
+ *
+ * @param num a number to be separated
+ * @return string separated number
+ */
 const separateNumber = (num: number): string => {
   const s = num.toString();
   const segments = [];
