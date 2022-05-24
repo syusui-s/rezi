@@ -24,8 +24,6 @@ const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
   </div>
 );
 
-const CatalogItem = () => {};
-
 const Catalog: Component = () => {
   const [showCart, setShowCart] = createSignal(false);
   const { products, addProduct, removeProduct } = useProducts();
@@ -60,7 +58,7 @@ const Catalog: Component = () => {
           class="bg-white container w-full xl:w-8/12 fixed
                 top-0 z-10 h-60
                 md:h-56 md:top-auto md:bottom-0
-                flex flex-col md:flex-row md:items-center md:justify-between p-2 md:px-0 mt-12"
+                flex flex-col md:flex-row md:items-center md:justify-between p-2 md:px-0 mt-10"
           style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
         >
           <div class="flex-auto overflow-y-scroll h-full flex-auto border-b md:border-r">
@@ -102,12 +100,12 @@ const Catalog: Component = () => {
           </div>
           <div class="flex flex-col items-end justify-end md:px-2 md:h-full md:basis-1/3">
             <div class="flex items-center gap-4 md:gap-0 md:flex-col md:items-end py-2">
-              <div class="text-lg md:text-base text-zinc-700">{totalQuantity()} 点</div>
+              <div class="text-lg md:text-2xl text-zinc-700">{totalQuantity()} 点</div>
               <div class="text-xl md:text-5xl text-end">
                 <PriceDisplay price={totalPrice} />
               </div>
             </div>
-            <div class="flex items-center justify-between gap-2 w-full h-7 sm:h-12">
+            <div class="flex items-center justify-between gap-2 w-full h-9 sm:h-12">
               <button
                 type="button"
                 class="bg-zinc-500 hover:bg-zinc-600 text-white text-base w-16 h-full sm:p-2 shadow"

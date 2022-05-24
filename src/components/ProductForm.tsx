@@ -57,7 +57,7 @@ const ProductForm: Component<ProductInputProps> = (props) => {
     <form onSubmit={handleSubmit}>
       <div class="px-4 py-3">
         <label>
-          <div>名前</div>
+          <div>品名</div>
           <input ref={nameEl} type="text" name="name" required class="form-input" />
         </label>
       </div>

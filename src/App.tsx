@@ -1,25 +1,15 @@
 import type { Component } from 'solid-js';
-import { Routes, Route, Navigate, Link } from 'solid-app-router';
+import { Routes, Route, Navigate } from 'solid-app-router';
 
 import Catalog from '@/pages/Catalog';
 import ManageProduct from '@/pages/ManageProduct';
-
-const NotFound: Component = () => (
-  <div>
-    <h1 class="text-4xl">Not Found</h1>
-    <Link href="/" class="text-2xl text-blue-500 underline">
-      Home
-    </Link>
-  </div>
-);
+import NotFound from '@/pages/NotFound';
 
 const App: Component = () => (
   <Routes>
     <Route path="/catalog" element={<Catalog />} />
     <Route path="/products/new" element={<ManageProduct />} />
-    <Route path="/">
-      <Navigate href="/catalog" />
-    </Route>
+    <Route path="/" element={<Navigate href="/catalog" />} />
     <Route path="/*" element={<NotFound />} />
   </Routes>
 );
