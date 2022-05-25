@@ -9,11 +9,11 @@ import useProducts from '@/useProducts';
 import useSales from '@/useSales';
 
 const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
-  <div class="grid grid-cols-5 w-22 lg:w-32 gap-1 sm:gap-2">
+  <div class="grid grid-cols-5 gap-1 sm:gap-2 lg:w-32 w-22">
     <For each={Array(props.quantity()).splice(0, 10)}>
       {() => (
         <div
-          class="w-3 h-3 md:w-4 md:h-4 bg-white"
+          class="w-3 h-3 bg-white md:w-4 md:h-4"
           style="box-shadow: 2px 2px 2px rgba(0,0,0,0.7)"
         />
       )}
@@ -45,7 +45,7 @@ const CatalogView: Component = () => {
         <Link href="/products/new" class="navigationButton">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
+            class="w-6 h-6"
             fill="none"
             view-box="0 0 24 24"
             stroke="currentColor"
@@ -62,13 +62,13 @@ const CatalogView: Component = () => {
     >
       <div class="pt-52 md:pt-0 md:pb-56">
         <div
-          class="bg-white container w-full xl:w-8/12 fixed
-                top-0 z-10 h-60
-                md:h-56 md:top-auto md:bottom-0
-                flex flex-col md:flex-row md:items-center md:justify-between p-2 md:px-0 mt-10"
+          class="container flex fixed top-0 z-10
+                flex-col p-2 mt-10
+                w-full h-60 bg-white
+                md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
           style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
         >
-          <div class="flex-auto overflow-y-scroll h-full flex-auto border-b md:border-r">
+          <div class="overflow-y-scroll flex-auto h-full border-b touch-pan-y md:border-r">
             <For each={cart().content()}>
               {(cartItem) => {
                 const product = findProduct(cartItem.productId);
@@ -76,46 +76,49 @@ const CatalogView: Component = () => {
                 if (product == null) return null;
 
                 return (
-                  <div class="flex h-8 items-center pr-2 border-b">
-                    <div class="flex items-center">
-                      <button
-                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 text-mono"
-                        onClick={() => removeFromCart(cartItem.productId)}
-                      >
-                        -
-                      </button>
-                      <div class="w-8 text-center mx-4 text-mono font-bold text-2xl">
-                        {cartItem.quantity}
-                      </div>
-                      <button
-                        class="w-12 py-1 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 text-mono"
-                        onClick={() => addToCart(cartItem.productId)}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div class="flex-auto text-lg whitespace-nowrap overflow-hidden text-ellipsis w-full">
+                  <div
+                    class="flex items-center pr-2 h-8 border-b"
+                    classList={{ 'text-zinc-300': cartItem.quantity === 0 }}
+                  >
+                    <div class="overflow-hidden flex-auto w-full text-lg text-ellipsis whitespace-nowrap">
                       {product.name}
                     </div>
                     <div class="text-base">
                       <PriceDisplay price={() => product.price} />
+                    </div>
+                    <div class="flex items-center">
+                      <div class="mx-4 w-8 text-2xl font-bold text-center text-mono">
+                        {cartItem.quantity}
+                      </div>
+                      <button
+                        class="py-1 w-12 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 touch-manipulation select-none text-mono"
+                        onClick={() => removeFromCart(cartItem.productId)}
+                      >
+                        -
+                      </button>
+                      <button
+                        class="py-1 w-12 h-full text-xl hover:bg-zinc-100 focus:bg-zinc-200 touch-manipulation select-none text-mono"
+                        onClick={() => addToCart(cartItem.productId)}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 );
               }}
             </For>
           </div>
-          <div class="flex flex-col items-end justify-end md:px-2 md:h-full md:basis-1/3">
-            <div class="flex items-center gap-4 md:gap-0 md:flex-col md:items-end py-2">
-              <div class="text-base md:text-2xl text-zinc-700">{totalQuantity()} 点</div>
+          <div class="flex flex-col justify-end items-end md:basis-1/3 md:px-2 md:h-full">
+            <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
+              <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
               <div class="text-3xl md:text-5xl text-end">
                 <PriceDisplay price={totalPrice} />
               </div>
             </div>
-            <div class="flex items-center justify-between gap-2 w-full h-9 sm:h-12">
+            <div class="flex gap-2 justify-between items-center w-full h-9 sm:h-12">
               <button
                 type="button"
-                class="bg-zinc-500 hover:bg-zinc-600 text-white text-base w-16 h-full sm:p-2 shadow"
+                class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
                 onClick={() => {
                   clearCart();
                 }}
@@ -124,7 +127,7 @@ const CatalogView: Component = () => {
               </button>
               <button
                 type="button"
-                class="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 disabled:text-zinc-400 text-lg md:text-2xl text-white w-32 h-full sm:p-2 shadow"
+                class="w-32 h-full text-lg text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
                 disabled={cart().isEmpty()}
                 onClick={handleRegister}
               >
@@ -133,26 +136,26 @@ const CatalogView: Component = () => {
             </div>
           </div>
         </div>
-        <div class="my-4 grid grid-cols-4 md:grid-cols-5 gap-2 md:gap-4">
+        <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
           <For each={products()} fallback={<div>頒布物がまだ登録されていません</div>}>
             {(product) => {
               const quantity = () => cart().find(product.id)?.quantity ?? 0;
               return (
                 <div
-                  class="bg-white shadow-md p-2 py-2 md:px-4 hover:bg-zinc-50 rounded select-none cursor-pointer"
+                  class="p-2 py-2 bg-white hover:bg-zinc-50 rounded shadow-md cursor-pointer touch-manipulation select-none md:px-4"
                   role="button"
                   tabIndex="0"
                   onClick={() => addToCart(product.id)}
                   onKeyDown={(ev) => ev.key === 'Enter' && addToCart(product.id)}
                 >
-                  <div class="object-cover relative aspect-square bg-zinc-200">
+                  <div class="aspect-square object-cover relative bg-zinc-200">
                     <Show when={quantity() > 0}>
                       <div
-                        class="absolute flex flex-nowrap flex-col justify-center items-center w-full h-full"
+                        class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
                         style="background: rgba(0,0,0,0.4)"
                       >
                         <div
-                          class="font-mono font-bold text-white text-4xl sm:text-5xl md:text-6xl"
+                          class="font-mono text-4xl font-bold text-white sm:text-5xl md:text-6xl"
                           style="text-shadow: 1px 1px 4px #000"
                         >
                           {quantity()}
@@ -161,7 +164,7 @@ const CatalogView: Component = () => {
                       </div>
                     </Show>
                     <Show when={product.imageUrl == null}>
-                      <div class="bg-blue-500 text-lg sm:text-xl md:text-2xl w-full h-full mx-auto p-2 md:p-4 text-white overflow-hidden whitespace-pre break-all">
+                      <div class="overflow-hidden p-2 mx-auto w-full h-full text-lg text-white whitespace-pre break-all bg-blue-500 sm:text-xl md:p-4 md:text-2xl">
                         {product.name}
                       </div>
                     </Show>
@@ -175,10 +178,10 @@ const CatalogView: Component = () => {
                       </div>
                     </Show>
                   </div>
-                  <div class="text-xs md:text-base overflow-hidden whitespace-nowrap text-ellipsis">
+                  <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
                     {product.name}
                   </div>
-                  <div class="text-base font-bold font-mono">
+                  <div class="font-mono text-base font-bold">
                     <PriceDisplay price={() => product.price} />
                   </div>
                   <div>
@@ -186,7 +189,7 @@ const CatalogView: Component = () => {
                       type="button"
                       onClick={() => removeProduct(product.id)}
                       area-label="削除"
-                      class="text-red-500 text-xs md:text-base"
+                      class="text-xs text-red-500 md:text-base"
                     >
                       削除
                     </button>

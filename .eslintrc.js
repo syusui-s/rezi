@@ -12,6 +12,7 @@ module.exports = {
     'plugin:solid/typescript',
     'plugin:prettier/recommended',
     'plugin:jsx-a11y/recommended',
+    'plugin:tailwindcss/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier',
@@ -22,7 +23,7 @@ module.exports = {
     ecmaFeatures: { jsx: true },
     ecmaVersion: 2021,
   },
-  plugins: ['import', 'solid', 'jsx-a11y', 'prettier', '@typescript-eslint'],
+  plugins: ['import', 'solid', 'jsx-a11y', 'prettier', '@typescript-eslint', 'tailwindcss'],
   rules: {
     'import/extensions': ['error', 'ignorePackages', { ts: 'never', tsx: 'never' }],
     'prettier/prettier': 'error',

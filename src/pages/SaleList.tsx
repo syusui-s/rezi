@@ -32,21 +32,21 @@ const SaleList: Component = () => {
       <div>
         <For each={salesGrouped()}>
           {([date, groupedSales]) => (
-            <div class="border p-4 rounded-md">
-              <h2 class="text-2xl font-bold text-center pb-4">{date}</h2>
+            <div class="p-4 rounded-md border">
+              <h2 class="pb-4 text-2xl font-bold text-center">{date}</h2>
               <div></div>
               <For each={groupedSales}>
                 {(sale) => {
                   return (
-                    <div class="border p-4 rounded-md mb-4">
+                    <div class="p-4 mb-4 rounded-md border">
                       <div class="text-xl font-bold text-center">
                         {sale.soldAt.toLocaleTimeString()}
                       </div>
-                      <ul class="border rounded">
+                      <ul class="rounded border">
                         <For each={sale.items}>
                           {(saleItem) => {
                             return (
-                              <li class="flex items-center justify-between p-1 border-b last:border-none">
+                              <li class="flex justify-between items-center p-1 border-b last:border-none">
                                 <div class="flex-auto">{saleItem.name}</div>
                                 <div class="basis-1/12 text-right">{saleItem.price}</div>
                                 <div class="basis-1/12 text-right">x {saleItem.quantity}</div>

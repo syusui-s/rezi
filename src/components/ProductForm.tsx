@@ -59,19 +59,19 @@ const ProductForm: Component<ProductInputProps> = (props) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div class="px-4 py-3">
+      <div class="py-3 px-4">
         <label>
           <div>品名</div>
           <input ref={nameEl} type="text" name="name" required class="form-input" />
         </label>
       </div>
-      <div class="px-4 py-3">
+      <div class="py-3 px-4">
         <label>
           <div>価格</div>
           <input ref={priceEl} type="number" name="price" min="0" required class="form-input" />
         </label>
       </div>
-      <div class="px-4 py-3">
+      <div class="py-3 px-4">
         <label>
           <div>画像</div>
           <input
@@ -87,7 +87,7 @@ const ProductForm: Component<ProductInputProps> = (props) => {
           <img src={resizedImage()} class="w-32" alt="画像プレビュー" />
         </Show>
       </div>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">
+      <button type="submit" class="py-2 px-4 font-bold text-white bg-blue-500 hover:bg-blue-700">
         登録
       </button>
     </form>
