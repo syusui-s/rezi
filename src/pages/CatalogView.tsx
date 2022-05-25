@@ -3,14 +3,10 @@ import type { Accessor, Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
+import PriceDisplay from '@/components/PriceDisplay';
 import useCart from '@/useCart';
 import useProducts from '@/useProducts';
 import useSales from '@/useSales';
-import commafy from '@/utils/commafy';
-
-const PriceDisplay: Component<{ price: Accessor<number> }> = (props) => (
-  <span class="font-mono">&yen;{commafy(props.price())}</span>
-);
 
 const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
   <div class="grid grid-cols-5 w-22 lg:w-32 gap-1 sm:gap-2">
@@ -25,7 +21,7 @@ const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
   </div>
 );
 
-const Catalog: Component = () => {
+const CatalogView: Component = () => {
   const { products, findProduct, removeProduct } = useProducts();
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
     products,
@@ -182,7 +178,9 @@ const Catalog: Component = () => {
                   <div class="text-xs md:text-base overflow-hidden whitespace-nowrap text-ellipsis">
                     {product.name}
                   </div>
-                  <div class="text-base font-bold font-mono">&yen;{commafy(product.price)}</div>
+                  <div class="text-base font-bold font-mono">
+                    <PriceDisplay price={() => product.price} />
+                  </div>
                   <div>
                     <button
                       type="button"
@@ -203,4 +201,4 @@ const Catalog: Component = () => {
   );
 };
 
-export default Catalog;
+export default CatalogView;

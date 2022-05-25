@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+set -x
+
 npm test
 npx lint-staged
+
+UNKNOWN_LICENSE="$(npx license-checker --production --exclude 'MIT, MIT, ISC, Apache-2.0, BSD-3-Clause')"
+if [ -n "$UNKNOWN_LICENSE" ]; then
+	echo "$UNKNOWN_LICENSE"
+	exit 1
+fi

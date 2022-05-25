@@ -29,6 +29,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-solid": "^0.4.7",
     "husky": "^8.0.1",
+    "license-checker": "^25.0.1",
     "lint-staged": "^12.4.1",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
@@ -36,15 +37,15 @@
     "power-assert": "^1.6.1",
     "prettier": "^2.6.2",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "vite": "^2.8.6",
+    "vite-plugin-solid": "^2.2.6"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.2",
     "solid-app-router": "^0.3.3",
     "solid-js": "^1.4.2",
-    "tailwindcss": "^3.0.24",
-    "vite": "^2.8.6",
-    "vite-plugin-solid": "^2.2.6"
+    "tailwindcss": "^3.0.24"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix"
