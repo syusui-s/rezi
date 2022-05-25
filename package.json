@@ -1,7 +1,9 @@
 {
-  "name": "vite-template-solid",
+  "name": "",
   "version": "0.0.0",
   "description": "",
+  "license": "GPL-3.0+",
+  "private": true,
   "scripts": {
     "start": "vite",
     "dev": "vite",
@@ -13,7 +15,6 @@
     "fix": "eslint --fix .",
     "prepare": "husky install"
   },
-  "license": "MIT",
   "devDependencies": {
     "@types/mocha": "^9.1.1",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
