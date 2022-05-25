@@ -1,6 +1,8 @@
 import type { Component, JSX } from 'solid-js';
 import { createSignal, Show } from 'solid-js';
 
+import useResizedImage from '@/useResizedImage';
+
 export type ProductFormInput = {
   name: string;
   price: number;
@@ -38,6 +40,8 @@ const ProductForm: Component<ProductInputProps> = (props) => {
 
   const { fileUrl: imageUrl, handleChange: handleFileChange, clearUrl } = useFileUrl();
 
+  const resizedImage = useResizedImage(imageUrl, 255, 255);
+
   const handleSubmit: JSX.EventHandler<HTMLFormElement, Event> = (ev) => {
     ev.preventDefault();
 
@@ -48,7 +52,7 @@ const ProductForm: Component<ProductInputProps> = (props) => {
     const name = nameEl.value;
     const price = Number(priceEl.value);
 
-    props.onSubmit({ name, price, imageUrl: imageUrl() });
+    props.onSubmit({ name, price, imageUrl: resizedImage() });
     ev.currentTarget.reset();
     clearUrl();
   };
@@ -79,8 +83,8 @@ const ProductForm: Component<ProductInputProps> = (props) => {
             onChange={handleFileChange}
           />
         </label>
-        <Show when={imageUrl() != null}>
-          <img src={imageUrl()} class="w-32" alt="画像プレビュー" />
+        <Show when={resizedImage() != null}>
+          <img src={resizedImage()} class="w-32" alt="画像プレビュー" />
         </Show>
       </div>
       <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4">

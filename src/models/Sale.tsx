@@ -5,10 +5,10 @@ import SaleItem from './SaleItem';
  */
 export default class Sale {
   constructor(
-    readonly saleId: string,
+    readonly id: string,
     /** 売上日時 */
     readonly soldAt: Date,
     /** 売上明細 */
-    readonly items: SaleItem[],
+    readonly items: ReadonlyArray<SaleItem>,
   ) {}
 }

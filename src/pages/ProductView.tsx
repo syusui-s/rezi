@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Link } from 'solid-app-router';
+import { Link, useNavigate } from 'solid-app-router';
 
 import Product from '@/models/Product';
 import AppLayout from '@/components/AppLayout';
@@ -7,6 +7,8 @@ import ProductForm from '@/components/ProductForm';
 import useProducts from '@/useProducts';
 
 const ManageProduct: Component = () => {
+  const navigate = useNavigate();
+
   const { addProduct } = useProducts();
 
   const handleProductFormSubmit = ({
@@ -21,13 +23,14 @@ const ManageProduct: Component = () => {
     const id = Math.random().toString();
     const product = new Product(id, name, price, imageUrl);
     addProduct(product);
+    navigate('/catalogs/current');
   };
 
   return (
     <AppLayout
       titleElement="頒布物登録"
       prevElement={
-        <Link href="/catalog" class="navigationButton">
+        <Link href="/catalogs/current" class="navigationButton">
           ←
         </Link>
       }

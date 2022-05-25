@@ -1,7 +1,8 @@
 import { createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js';
-import Product from './models/Product';
-import Cart from './models/Cart';
+
+import Product from '@/models/Product';
+import Cart from '@/models/Cart';
 
 type UseCartProps = {
   products: Accessor<Product[]>;
@@ -16,9 +17,9 @@ type UseCart = {
   totalQuantity: () => number;
 };
 
-const useCart = ({ products }: UseCartProps): UseCart => {
-  const [cart, setCart] = createSignal<Cart>(Cart.empty());
+const [cart, setCart] = createSignal<Cart>(Cart.empty());
 
+const useCart = ({ products }: UseCartProps): UseCart => {
   const addToCart = (productId: string, quantity = 1) => {
     setCart((currentCart) => currentCart.add(productId, quantity));
   };

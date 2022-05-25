@@ -1,10 +1,11 @@
-import { createSignal, For, Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 import type { Accessor, Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import useCart from '@/useCart';
 import useProducts from '@/useProducts';
+import useSales from '@/useSales';
 import commafy from '@/utils/commafy';
 
 const PriceDisplay: Component<{ price: Accessor<number> }> = (props) => (
@@ -25,15 +26,25 @@ const QuantityCubes: Component<{ quantity: Accessor<number> }> = (props) => (
 );
 
 const Catalog: Component = () => {
-  const [showCart, setShowCart] = createSignal(false);
-  const { products, addProduct, removeProduct } = useProducts();
+  const { products, findProduct, removeProduct } = useProducts();
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
     products,
   });
+  const { register } = useSales();
+
+  const handleRegister = () => {
+    register(cart());
+    clearCart();
+  };
 
   return (
     <AppLayout
       titleElement="カタログ ▼"
+      prevElement={
+        <Link href="/sales" class="navigationButton">
+          売上記録
+        </Link>
+      }
       nextElement={
         <Link href="/products/new" class="navigationButton">
           <svg
@@ -64,7 +75,7 @@ const Catalog: Component = () => {
           <div class="flex-auto overflow-y-scroll h-full flex-auto border-b md:border-r">
             <For each={cart().content()}>
               {(cartItem) => {
-                const product = products().find((e) => e.id === cartItem.productId);
+                const product = findProduct(cartItem.productId);
 
                 if (product == null) return null;
 
@@ -100,8 +111,8 @@ const Catalog: Component = () => {
           </div>
           <div class="flex flex-col items-end justify-end md:px-2 md:h-full md:basis-1/3">
             <div class="flex items-center gap-4 md:gap-0 md:flex-col md:items-end py-2">
-              <div class="text-lg md:text-2xl text-zinc-700">{totalQuantity()} 点</div>
-              <div class="text-xl md:text-5xl text-end">
+              <div class="text-base md:text-2xl text-zinc-700">{totalQuantity()} 点</div>
+              <div class="text-3xl md:text-5xl text-end">
                 <PriceDisplay price={totalPrice} />
               </div>
             </div>
@@ -111,7 +122,6 @@ const Catalog: Component = () => {
                 class="bg-zinc-500 hover:bg-zinc-600 text-white text-base w-16 h-full sm:p-2 shadow"
                 onClick={() => {
                   clearCart();
-                  setShowCart(false);
                 }}
               >
                 クリア
@@ -120,6 +130,7 @@ const Catalog: Component = () => {
                 type="button"
                 class="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 disabled:text-zinc-400 text-lg md:text-2xl text-white w-32 h-full sm:p-2 shadow"
                 disabled={cart().isEmpty()}
+                onClick={handleRegister}
               >
                 会計
               </button>
@@ -135,10 +146,7 @@ const Catalog: Component = () => {
                   class="bg-white shadow-md p-2 py-2 md:px-4 hover:bg-zinc-50 rounded select-none cursor-pointer"
                   role="button"
                   tabIndex="0"
-                  onClick={() => {
-                    console.log('clicked');
-                    addToCart(product.id);
-                  }}
+                  onClick={() => addToCart(product.id)}
                   onKeyDown={(ev) => ev.key === 'Enter' && addToCart(product.id)}
                 >
                   <div class="object-cover relative aspect-square bg-zinc-200">
