@@ -3,6 +3,7 @@ import type { Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
+import PriceDisplay from '@/components/PriceDisplay';
 import useSales from '@/useSales';
 import type Sale from '@/models/Sale';
 
@@ -47,8 +48,10 @@ const SaleList: Component = () => {
                           {(saleItem) => {
                             return (
                               <li class="flex justify-between items-center p-1 border-b last:border-none">
-                                <div class="flex-auto">{saleItem.name}</div>
-                                <div class="basis-1/12 text-right">{saleItem.price}</div>
+                                <div class="basis-3/4">{saleItem.name}</div>
+                                <div class="flex-auto text-right">
+                                  <PriceDisplay price={() => saleItem.price} />
+                                </div>
                                 <div class="basis-1/12 text-right">x {saleItem.quantity}</div>
                               </li>
                             );
