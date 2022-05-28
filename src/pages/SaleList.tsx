@@ -50,7 +50,7 @@ const SaleList: Component = () => {
                               <li class="flex justify-between items-center p-1 border-b last:border-none">
                                 <div class="basis-3/4">{saleItem.name}</div>
                                 <div class="flex-auto text-right">
-                                  <PriceDisplay price={() => saleItem.price} />
+                                  <PriceDisplay price={saleItem.price} />
                                 </div>
                                 <div class="basis-1/12 text-right">x {saleItem.quantity}</div>
                               </li>
