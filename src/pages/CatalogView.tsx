@@ -1,10 +1,10 @@
-import { For, Show } from 'solid-js';
-import type { Component } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
+import type { Component, JSX } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
-import Product from '@/models/Product';
+import type Product from '@/models/Product';
 import useCart from '@/useCart';
 import useProducts from '@/useProducts';
 import useSales from '@/useSales';
@@ -45,64 +45,102 @@ type ProductDisplayProps = {
   quantity: number;
   addToCart: (productId: string) => void;
   removeProduct: (productId: string) => void;
+  editing: boolean;
 };
 
-const ProductDisplay: Component<ProductDisplayProps> = (props) => (
-  <div
-    class="p-2 py-2 bg-white hover:bg-zinc-50 rounded shadow-md cursor-pointer touch-manipulation select-none md:px-4"
-    role="button"
-    tabIndex="0"
-    onClick={() => props.addToCart(props.product.id)}
-    onKeyDown={(ev) => ev.key === 'Enter' && props.addToCart(props.product.id)}
-  >
-    <div class="aspect-square object-cover relative bg-zinc-200">
-      <Show when={props.quantity > 0}>
-        <div
-          class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
-          style="background: rgba(0,0,0,0.4)"
+const ProductDisplay: Component<ProductDisplayProps> = (props) => {
+  const handleClick = () => {
+    if (props.editing) {
+      console.log('TODO: ');
+    } else {
+      props.addToCart(props.product.id);
+    }
+  };
+
+  const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (ev) =>
+    ev.key === 'Enter' && handleClick();
+
+  const handleRemove = () => {
+    if (window.confirm('本当に削除しますか？')) {
+      props.removeProduct(props.product.id);
+    }
+  };
+
+  const quantity = (
+    <Show when={props.quantity > 0}>
+      <div
+        class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
+        style="background: rgba(0,0,0,0.4)"
+      >
+        <Show
+          when={props.quantity <= 10}
+          fallback={
+            <div
+              class="font-mono text-4xl font-bold text-white sm:text-5xl md:text-6xl"
+              style="text-shadow: 1px 1px 4px #000"
+            >
+              {props.quantity}
+            </div>
+          }
         >
-          <div
-            class="font-mono text-4xl font-bold text-white sm:text-5xl md:text-6xl"
-            style="text-shadow: 1px 1px 4px #000"
-          >
-            {props.quantity}
-          </div>
           <QuantityCubes quantity={props.quantity} />
-        </div>
-      </Show>
-      <Show when={props.product.imageUrl == null}>
+        </Show>
+      </div>
+    </Show>
+  );
+
+  const cover = (
+    <Show
+      when={props.product.imageUrl != null}
+      fallback={
         <div class="overflow-hidden p-2 mx-auto w-full h-full text-lg text-white whitespace-pre break-all bg-blue-500 sm:text-xl md:p-4 md:text-2xl">
           {props.product.name}
         </div>
-      </Show>
-      <Show when={props.product.imageUrl != null}>
-        <div class="flex justify-center w-full h-full">
-          <img
-            src={props.product.imageUrl}
-            class="object-contain max-w-full max-h-full"
-            alt="頒布物の画像"
-          />
+      }
+    >
+      <div class="flex justify-center w-full h-full">
+        <img
+          src={props.product.imageUrl}
+          class="object-contain max-w-full max-h-full"
+          alt="頒布物の画像"
+        />
+      </div>
+    </Show>
+  );
+
+  return (
+    <div
+      class="p-2 py-2 bg-white hover:bg-zinc-50 rounded shadow-md cursor-pointer touch-manipulation select-none md:px-4"
+      role="button"
+      tabIndex="0"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
+      <div class="aspect-square object-cover relative bg-zinc-200">
+        <Show when={!props.editing}>{quantity}</Show>
+        {cover}
+      </div>
+      <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
+        {props.product.name}
+      </div>
+      <div class="font-mono text-base font-bold">
+        <PriceDisplay price={props.product.price} />
+      </div>
+      <Show when={props.editing}>
+        <div>
+          <button
+            type="button"
+            onClick={handleRemove}
+            area-label="削除"
+            class="text-xs text-red-500 md:text-base"
+          >
+            削除
+          </button>
         </div>
       </Show>
     </div>
-    <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
-      {props.product.name}
-    </div>
-    <div class="font-mono text-base font-bold">
-      <PriceDisplay price={props.product.price} />
-    </div>
-    <div>
-      <button
-        type="button"
-        onClick={() => props.removeProduct(props.product.id)}
-        area-label="削除"
-        class="text-xs text-red-500 md:text-base"
-      >
-        削除
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 type CartItemDisplayProps = {
   product: Product;
@@ -145,6 +183,7 @@ const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
 };
 
 const CatalogView: Component = () => {
+  const [editing, setEditing] = createSignal(false);
   const { products, findProduct, removeProduct } = useProducts();
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
     products,
@@ -156,73 +195,88 @@ const CatalogView: Component = () => {
     clearCart();
   };
 
+  const cartDisplay = (
+    <Show when={!editing()}>
+      <div
+        class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
+        style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
+      >
+        <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
+          <For each={cart().content()}>
+            {(cartItem) => {
+              const product = findProduct(cartItem.productId);
+              if (product == null) return null;
+
+              return (
+                <CartItemDisplay
+                  product={product}
+                  cartItem={cartItem}
+                  addToCart={addToCart}
+                  removeFromCart={removeFromCart}
+                />
+              );
+            }}
+          </For>
+        </div>
+        <div class="flex flex-col flex-auto justify-end items-end md:px-2 md:h-full">
+          <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
+            <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
+            <div class="text-3xl text-right md:text-5xl">
+              <PriceDisplay price={totalPrice()} />
+            </div>
+          </div>
+          <div class="flex gap-2 justify-between items-center w-full h-9 sm:h-12">
+            <button
+              type="button"
+              class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
+              onClick={() => clearCart()}
+            >
+              クリア
+            </button>
+            <button
+              type="button"
+              class="w-32 h-full text-lg text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
+              disabled={cart().isEmpty()}
+              onClick={handleRegister}
+            >
+              会計
+            </button>
+          </div>
+        </div>
+      </div>
+    </Show>
+  );
+
   return (
     <AppLayout
       titleElement="カタログ ▼"
       prevElement={
         <Link href="/sales" class="navigationButton">
-          売上記録
+          頒布履歴
         </Link>
       }
       nextElement={
-        <Link href="/products/new" class="navigationButton">
-          <AddItemIcon />
-        </Link>
+        <Show
+          when={editing()}
+          fallback={
+            <button class="navigationButton" onClick={() => setEditing(true)}>
+              編集
+            </button>
+          }
+        >
+          <div class="flex flex-row gap-4 items-center">
+            <Link href="/products/new" class="navigationButton">
+              <AddItemIcon />
+            </Link>
+            <button class="navigationButton" onClick={() => setEditing(false)}>
+              完了
+            </button>
+          </div>
+        </Show>
       }
     >
-      <div class="pt-52 md:pt-0 md:pb-56">
-        <div
-          class="container flex fixed top-0 z-10
-            flex-col p-2 mt-10
-            w-full h-60 bg-white
-            md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
-          style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
-        >
-          <div class="overflow-y-scroll flex-auto h-full border-b touch-pan-y md:border-r">
-            <For each={cart().content()}>
-              {(cartItem) => {
-                const product = findProduct(cartItem.productId);
-                if (product == null) return null;
-
-                return (
-                  <CartItemDisplay
-                    product={product}
-                    cartItem={cartItem}
-                    addToCart={addToCart}
-                    removeFromCart={removeFromCart}
-                  />
-                );
-              }}
-            </For>
-          </div>
-          <div class="flex flex-col justify-end items-end md:basis-1/3 md:px-2 md:h-full">
-            <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
-              <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
-              <div class="text-3xl text-right md:text-5xl">
-                <PriceDisplay price={totalPrice()} />
-              </div>
-            </div>
-            <div class="flex gap-2 justify-between items-center w-full h-9 sm:h-12">
-              <button
-                type="button"
-                class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
-                onClick={() => {
-                  clearCart();
-                }}
-              >
-                クリア
-              </button>
-              <button
-                type="button"
-                class="w-32 h-full text-lg text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
-                disabled={cart().isEmpty()}
-                onClick={handleRegister}
-              >
-                会計
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
+        {cartDisplay}
         <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
           <For each={products()} fallback={<div>頒布物がまだ登録されていません</div>}>
             {(product) => (
@@ -231,6 +285,7 @@ const CatalogView: Component = () => {
                 quantity={cart().find(product.id)?.quantity ?? 0}
                 addToCart={addToCart}
                 removeProduct={removeProduct}
+                editing={editing()}
               />
             )}
           </For>

@@ -23,7 +23,7 @@ const SaleList: Component = () => {
 
   return (
     <AppLayout
-      titleElement="売上記録"
+      titleElement="頒布履歴"
       prevElement={
         <Link href="/catalogs/current" class="navigationButton">
           カタログ

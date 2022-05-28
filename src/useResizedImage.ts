@@ -1,11 +1,19 @@
 import type { Accessor } from 'solid-js';
 import { createSignal, createEffect } from 'solid-js';
 
-const useResizedImage = (
-  imageUrl: Accessor<string | undefined>,
-  width: number,
-  height: number,
-): Accessor<string | undefined> => {
+export type UseResizedImageProps = {
+  imageUrl: Accessor<string | undefined>;
+  width: number;
+  height: number;
+  encoderOption?: number;
+};
+
+const useResizedImage = ({
+  imageUrl,
+  width,
+  height,
+  encoderOption,
+}: UseResizedImageProps): Accessor<string | undefined> => {
   const [resizedImage, setResizedImage] = createSignal<string | undefined>(undefined);
 
   createEffect(() => {
@@ -31,7 +39,7 @@ const useResizedImage = (
 
       ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, dw, dh);
 
-      const dataUrl = canvas.toDataURL('image/jpeg');
+      const dataUrl = canvas.toDataURL('image/jpeg', encoderOption);
 
       setResizedImage(dataUrl);
     });

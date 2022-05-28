@@ -40,7 +40,12 @@ const ProductForm: Component<ProductInputProps> = (props) => {
 
   const { fileUrl: imageUrl, handleChange: handleFileChange, clearUrl } = useFileUrl();
 
-  const resizedImage = useResizedImage(imageUrl, 255, 255);
+  const resizedImage = useResizedImage({
+    imageUrl,
+    height: 255,
+    width: 255,
+    encoderOption: 0.7,
+  });
 
   const handleSubmit: JSX.EventHandler<HTMLFormElement, Event> = (ev) => {
     ev.preventDefault();

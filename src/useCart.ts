@@ -17,9 +17,9 @@ type UseCart = {
   totalQuantity: () => number;
 };
 
-const [cart, setCart] = createSignal<Cart>(Cart.empty());
-
 const useCart = ({ products }: UseCartProps): UseCart => {
+  const [cart, setCart] = createSignal<Cart>(Cart.empty());
+
   const addToCart = (productId: string, quantity = 1) => {
     setCart((currentCart) => currentCart.add(productId, quantity));
   };

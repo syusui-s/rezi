@@ -1,5 +1,5 @@
 /**
- * 商品(頒布物)
+ * 商品
  */
 export default class Product {
   constructor(
