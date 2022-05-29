@@ -19,3 +19,7 @@ code {
 .navigationButton {
   @apply text-xl font-bold text-blue-500 hover:text-blue-600;
 }
+
+.link {
+  @apply underline text-blue-500;
+}

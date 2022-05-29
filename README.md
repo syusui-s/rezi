@@ -1,34 +1,19 @@
-## Usage
+# Rezi
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+## 利用許諾
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+Copyright (C) 2022 Shusui Moyatani
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+このプログラムはフリーソフトウェアです。
+あなたはこれを、フリーソフトウェア財団によって発行された
+GNU一般公衆利用許諾書（バージョン3か、それ以降のバージョンのうちどれか）が定める条件の下で
+再頒布または改変することができます。
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+このプログラムは有用であることを願って頒布されますが、 *全くの無保証* です。
+商業可能性の保証や特定目的への適合性は、言外に示されたものも含め、全く存在しません。
+詳しくはGNU一般公衆利用許諾書をご覧ください。
 
-## Available Scripts
+あなたはこのプログラムと共に、GNU 一般公衆利用許諾書のコピーを一部受け取っているはずです。
+もし受け取っていなければ、<http://www.gnu.org/licenses/> をご覧ください。
 
-In the project directory, you can run:
-
-### `npm dev` or `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+日本語訳: <https://gpl.mhatta.org/gpl.ja.html>
