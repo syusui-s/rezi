@@ -10,6 +10,10 @@ import useProducts from '@/useProducts';
 import useSales from '@/useSales';
 import CartItem from '@/models/CartItem';
 
+/*
+ * AddItemIcon is from heroicons.
+ * Copyright (c) 2020 Refactoring UI Inc.
+ */
 const AddItemIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +70,7 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
     }
   };
 
-  const quantity = (
+  const quantityDisplay = (
     <Show when={props.quantity > 0}>
       <div
         class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
@@ -110,14 +114,15 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
 
   return (
     <div
-      class="p-2 py-2 bg-white hover:bg-zinc-50 rounded shadow-md cursor-pointer touch-manipulation select-none md:px-4"
+      class="p-2 bg-white hover:bg-zinc-50 rounded border-2 border-white shadow-md cursor-pointer touch-manipulation select-none md:px-4"
+      classList={{ 'border-zinc-200': props.quantity > 0 }}
       role="button"
       tabIndex="0"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       <div class="aspect-square object-cover relative bg-zinc-200">
-        <Show when={!props.editing}>{quantity}</Show>
+        <Show when={!props.editing}>{quantityDisplay}</Show>
         {cover}
       </div>
       <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
