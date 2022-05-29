@@ -6,17 +6,18 @@ import Product from '@/models/Product';
 import AppLayout from '@/components/AppLayout';
 import ProductForm from '@/components/ProductForm';
 import NotFound from '@/pages/NotFound';
-import useProducts from '@/useProducts';
+import useCatalogs from '@/useCatalogs';
+import generateId from '@/utils/generateId';
 
 const ManageProduct: Component = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { saveProduct, findProduct } = useProducts();
+  const { currentCatalog, saveProduct, findProduct } = useCatalogs();
 
   const isCreatePage = () => params.id == null;
 
-  const getProduct = () => findProduct(params.id);
+  const getProduct = () => findProduct(currentCatalog().id, params.id);
 
   const handleProductFormSubmit = ({
     name,
@@ -27,9 +28,9 @@ const ManageProduct: Component = () => {
     price: number;
     imageUrl?: string;
   }) => {
-    const id = getProduct()?.id ?? Math.random().toString();
+    const id = getProduct()?.id ?? generateId();
     const product = new Product(id, name, price, imageUrl);
-    saveProduct(product);
+    saveProduct(currentCatalog().id, product);
     navigate('/catalogs/current');
   };
 

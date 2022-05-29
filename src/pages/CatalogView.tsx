@@ -6,7 +6,7 @@ import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
 import type Product from '@/models/Product';
 import useCart from '@/useCart';
-import useProducts from '@/useProducts';
+import useCatalogs from '@/useCatalogs';
 import useSales from '@/useSales';
 import CartItem from '@/models/CartItem';
 
@@ -192,9 +192,9 @@ const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
 
 const CatalogView: Component = () => {
   const [editing, setEditing] = createSignal(false);
-  const { products, findProduct, removeProduct } = useProducts();
+  const { currentCatalog, findProduct, removeProduct } = useCatalogs();
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
-    products,
+    products: () => currentCatalog()?.getProductArray() ?? [],
   });
   const { register } = useSales();
 
@@ -204,7 +204,7 @@ const CatalogView: Component = () => {
   };
 
   const cartDisplay = (
-    <Show when={!editing()}>
+    <Show when={!editing() && currentCatalog() !== null}>
       <div
         class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
         style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
@@ -212,7 +212,7 @@ const CatalogView: Component = () => {
         <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
           <For each={cart().content()}>
             {(cartItem) => {
-              const product = findProduct(cartItem.productId);
+              const product = findProduct(currentCatalog().id, cartItem.productId);
               if (product == null) return null;
 
               return (
@@ -286,13 +286,16 @@ const CatalogView: Component = () => {
       <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
         {cartDisplay}
         <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
-          <For each={products()} fallback={<div>頒布物がまだ登録されていません</div>}>
+          <For
+            each={currentCatalog().getProductArray()}
+            fallback={<div>頒布物がまだ登録されていません</div>}
+          >
             {(product) => (
               <ProductDisplay
                 product={product}
                 quantity={cart().find(product.id)?.quantity ?? 0}
                 addToCart={addToCart}
-                removeProduct={removeProduct}
+                removeProduct={(productId) => removeProduct(currentCatalog().id, productId)}
                 editing={editing()}
               />
             )}

@@ -4,7 +4,8 @@ import type { Accessor } from 'solid-js';
 import Cart from '@/models/Cart';
 import Sale from '@/models/Sale';
 import SaleItem from '@/models/SaleItem';
-import useProducts from '@/useProducts';
+import useCatalogs from '@/useCatalogs';
+import generateId from '@/utils/generateId';
 import { deserializeSales, serializeSales } from '@/serialize/sale';
 
 export type UseSales = {
@@ -15,7 +16,7 @@ export type UseSales = {
 const [sales, setSales] = createSignal<Sale[]>([]);
 
 const useSales = (): UseSales => {
-  const { findProduct } = useProducts();
+  const { currentCatalog, findProduct } = useCatalogs();
 
   onMount(() => {
     const data = globalThis.localStorage.getItem('sales');
@@ -33,12 +34,12 @@ const useSales = (): UseSales => {
     const saleItems = cart
       .content()
       .map((cartItem) => {
-        const product = findProduct(cartItem.productId);
+        const product = findProduct(currentCatalog().id, cartItem.productId);
         if (product == null) return null;
         return SaleItem.fromProduct(product, cartItem.quantity);
       })
       .filter(<T>(e: T | null): e is T => e != null);
-    const sale = new Sale(Math.random().toString(), new Date(), saleItems);
+    const sale = new Sale(generateId(), new Date(), saleItems);
 
     setSales([...sales(), sale]);
   };
