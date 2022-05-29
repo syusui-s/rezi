@@ -1,7 +1,7 @@
-import type { Component, JSX } from 'solid-js';
-import { createSignal, Show } from 'solid-js';
+import { Component, JSX, onMount, createSignal, Show } from 'solid-js';
 
 import useResizedImage from '@/useResizedImage';
+import Product from '@/models/Product';
 
 export type ProductFormInput = {
   name: string;
@@ -10,6 +10,7 @@ export type ProductFormInput = {
 };
 
 export type ProductInputProps = {
+  product?: Product;
   onSubmit: (input: ProductFormInput) => void;
 };
 
@@ -38,6 +39,7 @@ const ProductForm: Component<ProductInputProps> = (props) => {
   let priceEl: HTMLInputElement | undefined;
   let fileEl: HTMLInputElement | undefined;
 
+  const [defaultImageUrl, setDefaultImageUrl] = createSignal<string | undefined>();
   const { fileUrl: imageUrl, handleChange: handleFileChange, clearUrl } = useFileUrl();
 
   const resizedImage = useResizedImage({
@@ -45,6 +47,13 @@ const ProductForm: Component<ProductInputProps> = (props) => {
     height: 255,
     width: 255,
     encoderOption: 0.7,
+  });
+
+  onMount(() => {
+    if (nameEl == null || priceEl == null || fileEl == null) return;
+    nameEl.value = props.product?.name || '';
+    priceEl.value = props.product?.price?.toString() || '';
+    setDefaultImageUrl(props.product?.imageUrl);
   });
 
   const handleSubmit: JSX.EventHandler<HTMLFormElement, Event> = (ev) => {
@@ -57,7 +66,11 @@ const ProductForm: Component<ProductInputProps> = (props) => {
     const name = nameEl.value;
     const price = Number(priceEl.value);
 
-    props.onSubmit({ name, price, imageUrl: resizedImage() });
+    props.onSubmit({
+      name,
+      price,
+      imageUrl: resizedImage() ?? defaultImageUrl(),
+    });
     ev.currentTarget.reset();
     clearUrl();
   };
@@ -88,8 +101,8 @@ const ProductForm: Component<ProductInputProps> = (props) => {
             onChange={handleFileChange}
           />
         </label>
-        <Show when={resizedImage() != null}>
-          <img src={resizedImage()} class="w-32" alt="画像プレビュー" />
+        <Show when={resizedImage() != null || defaultImageUrl() != null}>
+          <img src={resizedImage() ?? defaultImageUrl()} class="w-32" alt="画像プレビュー" />
         </Show>
       </div>
       <button type="submit" class="py-2 px-4 font-bold text-white bg-blue-500 hover:bg-blue-700">

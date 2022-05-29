@@ -45,7 +45,14 @@ const useCart = ({ products }: UseCartProps): UseCart => {
         return acc + product.price * cartItem.quantity;
       }, 0);
 
-  return { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity };
+  return {
+    cart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    totalPrice,
+    totalQuantity,
+  };
 };
 
 export default useCart;

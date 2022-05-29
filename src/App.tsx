@@ -11,6 +11,7 @@ const App: Component = () => (
   <Routes>
     <Route path="/catalogs/current" element={<CatalogView />} />
     <Route path="/products/new" element={<ProductView />} />
+    <Route path="/products/:id" element={<ProductView />} />
     <Route path="/sales" element={<SaleList />} />
     <Route path="/about" element={<About />} />
     <Route path="/" element={<Navigate href="/catalogs/current" />} />

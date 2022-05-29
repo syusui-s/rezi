@@ -1,6 +1,6 @@
 import { For, Show, createSignal } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
-import { Link } from 'solid-app-router';
+import { Link, useNavigate } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
@@ -53,9 +53,11 @@ type ProductDisplayProps = {
 };
 
 const ProductDisplay: Component<ProductDisplayProps> = (props) => {
+  const navigate = useNavigate();
+
   const handleClick = () => {
     if (props.editing) {
-      console.log('TODO: ');
+      navigate(`/products/${encodeURIComponent(props.product.id)}`);
     } else {
       props.addToCart(props.product.id);
     }
