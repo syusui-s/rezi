@@ -12,7 +12,7 @@ const ManageProduct: Component = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { addProduct, findProduct } = useProducts();
+  const { saveProduct, findProduct } = useProducts();
 
   const isCreatePage = () => params.id == null;
 
@@ -27,9 +27,9 @@ const ManageProduct: Component = () => {
     price: number;
     imageUrl?: string;
   }) => {
-    const id = Math.random().toString();
+    const id = getProduct()?.id ?? Math.random().toString();
     const product = new Product(id, name, price, imageUrl);
-    addProduct(product);
+    saveProduct(product);
     navigate('/catalogs/current');
   };
 

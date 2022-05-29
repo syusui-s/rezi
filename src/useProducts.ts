@@ -5,7 +5,7 @@ import Product from './models/Product';
 type UseProducts = {
   products: Accessor<Product[]>;
   findProduct: (id: string) => Product | undefined;
-  addProduct: (product: Product) => void;
+  saveProduct: (product: Product) => void;
   removeProduct: (productId: string) => void;
 };
 
@@ -24,19 +24,26 @@ createEffect(() => {
 });
 
 const useProducts = (): UseProducts => {
-  const addProduct = (product: Product) => {
-    setProducts([...products(), product]);
+  const saveProduct = (product: Product) => {
+    const index = products().findIndex((e) => e.id === product.id);
+    if (index >= 0) {
+      const newProducts = [...products()];
+      newProducts[index] = product;
+      setProducts(newProducts);
+    } else {
+      setProducts([...products(), product]);
+    }
   };
 
   const removeProduct = (id: string) => {
-    setProducts(products().filter(({ id: current }) => current !== id));
+    setProducts(products().filter((e) => e.id !== id));
   };
 
   const findProduct = (id: string): Product | undefined => {
     return products().find((e) => e.id === id);
   };
 
-  return { products, findProduct, addProduct, removeProduct };
+  return { products, findProduct, saveProduct, removeProduct };
 };
 
 export default useProducts;

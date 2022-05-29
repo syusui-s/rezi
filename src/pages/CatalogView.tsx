@@ -66,7 +66,8 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
   const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (ev) =>
     ev.key === 'Enter' && handleClick();
 
-  const handleRemove = () => {
+  const handleRemove: JSX.EventHandler<HTMLButtonElement, Event> = (ev) => {
+    ev.stopPropagation();
     if (window.confirm('本当に削除しますか？')) {
       props.removeProduct(props.product.id);
     }
