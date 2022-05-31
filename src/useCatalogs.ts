@@ -8,7 +8,7 @@ import { serializeCatalogs, deserializeCatalogs } from './serialize/catalog';
 
 export type UseCatalogs = {
   catalogs: Accessor<Record<string, Catalog>>;
-  currentCatalog: Accessor<Catalog>;
+  findCatalog: (catalogId: string) => Catalog | undefined;
   saveProduct: (catalogId: string, product: Product) => void;
   removeProduct: (catalogId: string, productId: string) => void;
   findProduct: (catalogId: string, productId: string) => Product | undefined;
@@ -19,14 +19,12 @@ const defaultCatalogs = { [defaultCatalogId]: new Catalog(defaultCatalogId, 'カ
 
 const useCatalogs = (): UseCatalogs => {
   const [loaded, setLoaded] = createSignal<boolean>(false);
-  const [currentCatalogId, setCurrentCatalogId] = createSignal<string>(defaultCatalogId);
   const [catalogs, setCatalogs] = createSignal<Record<string, Catalog>>(defaultCatalogs);
 
   onMount(() => {
     const lastCatalogs = globalThis.localStorage.getItem('catalogs');
-    const lastCurrentCatalogId = globalThis.localStorage.getItem('currentCatalogId');
 
-    if (lastCatalogs === null || lastCurrentCatalogId === null) {
+    if (lastCatalogs === null) {
       setLoaded(true);
       return;
     }
@@ -34,7 +32,6 @@ const useCatalogs = (): UseCatalogs => {
     const deserialized = deserializeCatalogs(lastCatalogs);
     if (deserialized != null) {
       setCatalogs(deserialized);
-      setCurrentCatalogId(lastCurrentCatalogId);
     }
     setLoaded(true);
   });
@@ -42,19 +39,15 @@ const useCatalogs = (): UseCatalogs => {
   createEffect(() => {
     if (loaded()) {
       window.localStorage.setItem('catalogs', serializeCatalogs(catalogs()));
-      window.localStorage.setItem('currentCatalogId', currentCatalogId());
     }
   });
 
-  const currentCatalog = (): Catalog => {
-    const found = catalogs()[currentCatalogId()];
-    if (!found) throw new Error('');
-
-    return found;
+  const findCatalog = (catalogId: string): Catalog | undefined => {
+    return catalogs()[catalogId];
   };
 
   const updateCatalog = (catalogId: string, f: (catalog: Catalog) => Catalog) => {
-    const catalog = catalogs()[catalogId];
+    const catalog = findCatalog(catalogId);
     if (catalog == null) return;
 
     const newCatalogs = { ...catalogs() };
@@ -75,7 +68,7 @@ const useCatalogs = (): UseCatalogs => {
 
   return {
     catalogs,
-    currentCatalog,
+    findCatalog,
     saveProduct,
     removeProduct,
     findProduct,

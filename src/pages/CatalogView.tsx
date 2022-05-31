@@ -1,10 +1,11 @@
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, onMount, createSignal } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
-import { Link, useNavigate } from 'solid-app-router';
+import { Link, useNavigate, useParams } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
 import type Product from '@/models/Product';
+import NotFound from '@/pages/NotFound';
 import useCart from '@/useCart';
 import useCatalogs from '@/useCatalogs';
 import useSales from '@/useSales';
@@ -45,6 +46,7 @@ const QuantityCubes: Component<{ quantity: number }> = (props) => (
 );
 
 type ProductDisplayProps = {
+  catalogId: string | undefined;
   product: Product;
   quantity: number;
   addToCart: (productId: string) => void;
@@ -57,7 +59,10 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
 
   const handleClick = () => {
     if (props.editing) {
-      navigate(`/products/${encodeURIComponent(props.product.id)}`);
+      if (props.catalogId == null) return;
+      const escapedCatalogId = encodeURIComponent(props.catalogId);
+      const escapedProductId = encodeURIComponent(props.product.id);
+      navigate(`/catalogs/${escapedProductId}/products/${escapedCatalogId}`);
     } else {
       props.addToCart(props.product.id);
     }
@@ -68,6 +73,7 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
 
   const handleRemove: JSX.EventHandler<HTMLButtonElement, Event> = (ev) => {
     ev.stopPropagation();
+    // eslint-disable-next-line no-alert
     if (window.confirm('本当に削除しますか？')) {
       props.removeProduct(props.product.id);
     }
@@ -191,20 +197,32 @@ const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
 };
 
 const CatalogView: Component = () => {
+  const params = useParams();
+
+  const catalogId = () => params.id;
+
   const [editing, setEditing] = createSignal(false);
-  const { currentCatalog, findProduct, removeProduct } = useCatalogs();
+  const { findCatalog, findProduct, removeProduct } = useCatalogs();
+
+  const getCatalog = () => {
+    const id = catalogId();
+    return id ? findCatalog(id) : undefined;
+  };
+
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
-    products: () => currentCatalog()?.getProductArray() ?? [],
+    products: () => getCatalog()?.getProductArray() ?? [],
   });
   const { register } = useSales();
 
   const handleRegister = () => {
-    register(cart());
+    const catalog = getCatalog();
+    if (catalog == null) return;
+    register(catalog, cart());
     clearCart();
   };
 
   const cartDisplay = (
-    <Show when={!editing() && currentCatalog() !== null}>
+    <Show when={!editing() && getCatalog() != null}>
       <div
         class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
         style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
@@ -212,7 +230,8 @@ const CatalogView: Component = () => {
         <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
           <For each={cart().content()}>
             {(cartItem) => {
-              const product = findProduct(currentCatalog().id, cartItem.productId);
+              const catalog = getCatalog();
+              const product = catalog && findProduct(catalog.id, cartItem.productId);
               if (product == null) return null;
 
               return (
@@ -255,54 +274,69 @@ const CatalogView: Component = () => {
     </Show>
   );
 
+  const productsDisplay = (
+    <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
+      <For
+        each={getCatalog()?.getProductArray() ?? []}
+        fallback={<div>頒布物がまだ登録されていません</div>}
+      >
+        {(product) => (
+          <ProductDisplay
+            catalogId={catalogId()}
+            product={product}
+            quantity={cart().find(product.id)?.quantity ?? 0}
+            addToCart={addToCart}
+            removeProduct={(productId) => {
+              const catalog = getCatalog();
+              if (catalog == null) return;
+              removeProduct(catalog.id, productId);
+            }}
+            editing={editing()}
+          />
+        )}
+      </For>
+    </div>
+  );
+
   return (
-    <AppLayout
-      titleElement="カタログ ▼"
-      prevElement={
-        <Link href="/sales" class="navigationButton">
-          頒布履歴
-        </Link>
-      }
-      nextElement={
-        <Show
-          when={editing()}
-          fallback={
-            <button class="navigationButton" onClick={() => setEditing(true)}>
-              編集
-            </button>
-          }
-        >
-          <div class="flex flex-row gap-4 items-center">
-            <Link href="/products/new" class="navigationButton">
-              <AddItemIcon />
-            </Link>
-            <button class="navigationButton" onClick={() => setEditing(false)}>
-              完了
-            </button>
-          </div>
-        </Show>
-      }
-    >
-      <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
-        {cartDisplay}
-        <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
-          <For
-            each={currentCatalog().getProductArray()}
-            fallback={<div>頒布物がまだ登録されていません</div>}
+    <Show when={getCatalog() != null} fallback={<NotFound />}>
+      <AppLayout
+        titleElement={
+          <Link href="/catalogs" class="">
+            カタログ ▼
+          </Link>
+        }
+        prevElement={
+          <Link href="/sales" class="navigationButton">
+            頒布履歴
+          </Link>
+        }
+        nextElement={
+          <Show
+            when={editing()}
+            fallback={
+              <button class="navigationButton" onClick={() => setEditing(true)}>
+                編集
+              </button>
+            }
           >
-            {(product) => (
-              <ProductDisplay
-                product={product}
-                quantity={cart().find(product.id)?.quantity ?? 0}
-                addToCart={addToCart}
-                removeProduct={(productId) => removeProduct(currentCatalog().id, productId)}
-                editing={editing()}
-              />
-            )}
-          </For>
+            <div class="flex flex-row gap-4 items-center">
+              <Link href={`/catalogs/${catalogId()}/products/new`} class="navigationButton">
+                <AddItemIcon />
+              </Link>
+              <button class="navigationButton" onClick={() => setEditing(false)}>
+                完了
+              </button>
+            </div>
+          </Show>
+        }
+      >
+        <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
+          {cartDisplay}
+          {productsDisplay}
         </div>
-      </div>
-    </AppLayout>
+      </AppLayout>
+    </Show>
   );
 };
 

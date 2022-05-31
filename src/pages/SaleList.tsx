@@ -25,7 +25,7 @@ const SaleList: Component = () => {
     <AppLayout
       titleElement="頒布履歴"
       prevElement={
-        <Link href="/catalogs/current" class="navigationButton">
+        <Link href="/catalogs" class="navigationButton">
           カタログ
         </Link>
       }

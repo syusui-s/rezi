@@ -13,11 +13,17 @@ const ManageProduct: Component = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { currentCatalog, saveProduct, findProduct } = useCatalogs();
+  const { findCatalog, saveProduct, findProduct } = useCatalogs();
+
+  const getCatalog = () => (params.catalogId != null ? findCatalog(params.catalogId) : undefined);
 
   const isCreatePage = () => params.id == null;
 
-  const getProduct = () => findProduct(currentCatalog().id, params.id);
+  const getProduct = () => {
+    const catalog = getCatalog();
+    if (catalog == null) return undefined;
+    return findProduct(catalog.id, params.id);
+  };
 
   const handleProductFormSubmit = ({
     name,
@@ -28,10 +34,13 @@ const ManageProduct: Component = () => {
     price: number;
     imageUrl?: string;
   }) => {
+    const catalog = getCatalog();
+    if (catalog == null) return;
+
     const id = getProduct()?.id ?? generateId();
     const product = new Product(id, name, price, imageUrl);
-    saveProduct(currentCatalog().id, product);
-    navigate('/catalogs/current');
+    saveProduct(catalog.id, product);
+    navigate(`/catalogs/${catalog.id}`);
   };
 
   return (
@@ -39,7 +48,7 @@ const ManageProduct: Component = () => {
       <AppLayout
         titleElement="頒布物登録"
         prevElement={
-          <Link href="/catalogs/current" class="navigationButton">
+          <Link href={`/catalogs/${params.catalogId}`} class="navigationButton">
             ←
           </Link>
         }
