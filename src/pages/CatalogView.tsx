@@ -62,7 +62,7 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
       if (props.catalogId == null) return;
       const escapedCatalogId = encodeURIComponent(props.catalogId);
       const escapedProductId = encodeURIComponent(props.product.id);
-      navigate(`/catalogs/${escapedProductId}/products/${escapedCatalogId}`);
+      navigate(`/catalogs/${escapedCatalogId}/products/${escapedProductId}`);
     } else {
       props.addToCart(props.product.id);
     }

@@ -11,9 +11,12 @@ const CatalogList: Component = () => {
   return (
     <AppLayout titleElement="カタログ▲">
       <For each={Object.values(catalogs())}>
-        {(catalog) => <Link href={`/catalogs/${catalog.id}`}>{catalog.name}</Link>}
+        {(catalog) => (
+          <div>
+            <Link href={`/catalogs/${catalog.id}`}>{catalog.name}</Link>
+          </div>
+        )}
       </For>
-      <Link href={`/catalogs/abcde`}>abcde</Link>
     </AppLayout>
   );
 };
