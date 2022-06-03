@@ -14,15 +14,15 @@ const CatalogList: Component = () => {
       <For each={Object.values(catalogs())}>
         {(catalog) => (
           <Link href={`/catalogs/${catalog.id}`}>
-            <div class="flex flex-row items-center p-4 m-4 hover:bg-zinc-50 rounded border shadow">
-              <div class="w-48">
-                <div class="text-3xl font-bold">{catalog.name}</div>
-                <div class="text-xl">{Object.keys(catalog.products).length}個</div>
+            <div class="flex overflow-hidden flex-row items-center py-2 px-4 m-4 hover:bg-zinc-50 rounded border shadow">
+              <div class="basis-1/3 flex-none">
+                <div class="text-xl font-bold sm:text-3xl">{catalog.name}</div>
+                <div class="sm:text-xl text">{Object.keys(catalog.products).length}個</div>
               </div>
-              <div class="flex overflow-hidden gap-2 m-4 h-24">
-                <For each={Object.values(catalog.products).slice(0, 5)}>
+              <div class="flex overflow-scroll flex-row flex-auto shrink-0 gap-2 m-4 h-24">
+                <For each={Object.values(catalog.products).slice(0, 10)}>
                   {(product) => (
-                    <div class="w-24 h-24 rounded-lg">
+                    <div class="w-24 h-24">
                       <ProductCover product={product} />
                     </div>
                   )}
