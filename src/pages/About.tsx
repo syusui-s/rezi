@@ -9,10 +9,13 @@ type PackageInfo = {
     author: string;
     version: string;
     homepage: string;
-    licenceText: string;
+    licenseSpdx: string;
+    licenseText: string;
   };
   packages: {
     name: string;
+    version: string;
+    licenceSpdx: string;
     licenceText: string;
   }[];
 };
@@ -77,8 +80,10 @@ const About = () => {
           {(p) => {
             return (
               <>
-                <h3 class="my-4 text-xl">{p.name}</h3>
-                <pre class="overflow-scroll p-4 max-h-96 bg-zinc-100 rounded">{p.licenceText}</pre>
+                <h3 class="my-4 text-xl">
+                  {p.name}@{p.version} ({p.licenseSpdx})
+                </h3>
+                <pre class="overflow-scroll p-4 max-h-96 bg-zinc-100 rounded">{p.licenseText}</pre>
               </>
             );
           }}

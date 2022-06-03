@@ -6,8 +6,4 @@ set -x
 npm test
 npx lint-staged
 
-UNKNOWN_LICENSE="$(npx license-checker --production --exclude 'MIT, MIT, ISC, Apache-2.0, BSD-3-Clause, CC-BY-4.0')"
-if [ -n "$UNKNOWN_LICENSE" ]; then
-	echo "$UNKNOWN_LICENSE"
-	exit 1
-fi
+npm run checkLicense

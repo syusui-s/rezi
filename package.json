@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "rezi",
   "version": "0.0.0",
   "description": "",
   "license": "GPL-3.0+",
@@ -14,7 +14,8 @@
     "cover": "nyc npm run test",
     "fix": "eslint --fix .",
     "prepare": "husky install",
-    "generatePackageInfo": "node -e 'import(\"./generatePackageInfo.mjs\").then((m) => m.default())'"
+    "generatePackageInfo": "node -e 'import(\"./scripts/generatePackageInfo.mjs\").then((m) => m.default())'",
+    "checkLicense": "node -e 'import(\"./scripts/checkLicense.mjs\").then((m) => m.default())'"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
