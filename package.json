@@ -2,7 +2,7 @@
   "name": "rezi",
   "version": "0.0.0",
   "description": "",
-  "license": "GPL-3.0+",
+  "license": "AGPL-3.0-or-later",
   "private": true,
   "scripts": {
     "start": "npm run generatePackageInfo && vite",

@@ -15,8 +15,8 @@ type PackageInfo = {
   packages: {
     name: string;
     version: string;
-    licenceSpdx: string;
-    licenceText: string;
+    licenseSpdx: string;
+    licenseText: string;
   }[];
 };
 
@@ -49,30 +49,34 @@ const About = () => {
         <p class="my-4">Copyright (C) 2022 Shusui Moyatani</p>
 
         <p class="my-4">
-          このプログラムはフリーソフトウェアです。
-          あなたはこれを、フリーソフトウェア財団によって発行された
-          GNU一般公衆利用許諾書（バージョン3か、それ以降のバージョンのうちどれか）が定める条件の下で
-          再頒布または改変することができます。
+          このプログラムは自由ソフトウェアです。フリーソフトウェア財団から発行された
+          GNUアフェロー一般公衆ライセンス（バージョン3か、(任意で)より新しいバージョンのいずれか）の条件の下で
+          再頒布や改変、あるいはその両方を行うことができます。
         </p>
 
         <p class="my-4">
-          このプログラムは有用であることを願って頒布されますが、 <em>全くの無保証</em> です。
-          商業可能性の保証や特定目的への適合性は、言外に示されたものも含め、全く存在しません。
-          詳しくはGNU一般公衆利用許諾書をご覧ください。
+          このプログラムは役立つことを願って頒布されていますが、<em>いかなる保証もありません</em>。
+          <em>商品性</em> や <em>特定目的適合性</em>{' '}
+          に対する保証は、暗示されたものも含めて存在しません。
+          詳しくは、GNUアフェロー一般公衆ライセンスをご覧ください。
         </p>
 
         <p class="my-4">
-          あなたはこのプログラムと共に、GNU 一般公衆利用許諾書のコピーを一部受け取っているはずです。
-          もし受け取っていなければ、
-          <a class="link" href="http://www.gnu.org/licenses/">
-            http://www.gnu.org/licenses/
+          あなたは、このプログラムに付随してGNUアフェロー一般公衆ライセンスのコピーを受け取っていることでしょう。
+          そうでなければ、
+          <a class="link" href="https://www.gnu.org/licenses/">
+            https://www.gnu.org/licenses/
           </a>
-          をご覧ください。
+          をご参照ください。
         </p>
 
-        <a class="link" href="https://gpl.mhatta.org/gpl.ja.html">
-          日本語訳
+        <a class="link" href="https://gpl.mhatta.org/agpl.ja.html">
+          参考訳
         </a>
+
+        <pre class="overflow-scroll p-4 max-h-96 bg-zinc-100 rounded">
+          {packageInfo()?.self.licenseText}
+        </pre>
 
         <h2 class="my-4 text-2xl">使用ライブラリ</h2>
 
