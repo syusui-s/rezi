@@ -40,7 +40,7 @@ const ManageProduct: Component = () => {
     const id = getProduct()?.id ?? generateId();
     const product = new Product(id, name, price, imageUrl);
     saveProduct(catalog.id, product);
-    navigate(`/catalogs/${catalog.id}`);
+    navigate(`/catalogs/${catalog.id}/products`);
   };
 
   return (
@@ -48,7 +48,7 @@ const ManageProduct: Component = () => {
       <AppLayout
         titleElement="頒布物登録"
         prevElement={
-          <Link href={`/catalogs/${params.catalogId}`} class="navigationButton">
+          <Link href={`/catalogs/${params.catalogId}/products`} class="navigationButton">
             ←
           </Link>
         }
