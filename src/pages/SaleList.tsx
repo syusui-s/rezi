@@ -23,7 +23,7 @@ const SaleList: Component = () => {
   });
 
   return (
-    <AppLayout titleElement="頒布履歴" prevElement={<NavigationDrawer />}>
+    <AppLayout titleElement="売上" prevElement={<NavigationDrawer />}>
       <div>
         <For each={salesGrouped()}>
           {([date, groupedSales]) => (

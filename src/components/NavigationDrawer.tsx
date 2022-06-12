@@ -35,7 +35,7 @@ const NavigationDrawer: Component = () => {
         </li>
         <li>
           <Link href="/sales">
-            <LinkContent>頒布履歴</LinkContent>
+            <LinkContent>売上</LinkContent>
           </Link>
         </li>
         <li>
