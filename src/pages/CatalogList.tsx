@@ -2,15 +2,16 @@ import { For } from 'solid-js';
 import type { Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
+import AppLayout from '@/components/AppLayout';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import ProductCover from '@/components/ProductCover';
 import useCatalogs from '@/useCatalogs';
-import AppLayout from '@/components/AppLayout';
 
 const CatalogList: Component = () => {
   const { catalogs } = useCatalogs();
 
   return (
-    <AppLayout titleElement="カタログ▲">
+    <AppLayout prevElement={<NavigationDrawer />} titleElement="カタログ一覧">
       <For each={Object.values(catalogs())}>
         {(catalog) => (
           <Link href={`/catalogs/${encodeURIComponent(catalog.id)}/products`}>

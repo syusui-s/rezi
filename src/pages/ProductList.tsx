@@ -3,6 +3,7 @@ import type { Component, JSX } from 'solid-js';
 import { Link, useNavigate, useParams } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import PriceDisplay from '@/components/PriceDisplay';
 import ProductCover from '@/components/ProductCover';
 import type Product from '@/models/Product';
@@ -283,16 +284,8 @@ const CatalogView: Component = () => {
   return (
     <Show when={getCatalog() != null} fallback={<NotFound />}>
       <AppLayout
-        titleElement={
-          <Link href="/catalogs" class="">
-            カタログ ▼
-          </Link>
-        }
-        prevElement={
-          <Link href="/sales" class="navigationButton">
-            頒布履歴
-          </Link>
-        }
+        titleElement={getCatalog()?.name ?? ''}
+        prevElement={<NavigationDrawer />}
         nextElement={
           <Show
             when={editing()}

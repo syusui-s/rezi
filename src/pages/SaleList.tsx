@@ -3,6 +3,7 @@ import type { Component } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
+import NavigationDrawer from '@/components/NavigationDrawer';
 import PriceDisplay from '@/components/PriceDisplay';
 import useSales from '@/useSales';
 import type Sale from '@/models/Sale';
@@ -22,14 +23,7 @@ const SaleList: Component = () => {
   });
 
   return (
-    <AppLayout
-      titleElement="頒布履歴"
-      prevElement={
-        <Link href="/catalogs" class="navigationButton">
-          カタログ
-        </Link>
-      }
-    >
+    <AppLayout titleElement="頒布履歴" prevElement={<NavigationDrawer />}>
       <div>
         <For each={salesGrouped()}>
           {([date, groupedSales]) => (
