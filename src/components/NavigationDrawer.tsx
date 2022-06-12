@@ -21,12 +21,12 @@ const MenuIcon: Component = () => (
 );
 
 const LinkContent: Component<{ children?: JSX.Element }> = (props) => (
-  <span class="block py-8 px-2 text-xl font-bold hover:bg-zinc-100">{props.children}</span>
+  <span class="block py-8 px-4 text-xl font-bold hover:bg-zinc-100">{props.children}</span>
 );
 
 const NavigationDrawer: Component = () => {
   return (
-    <Drawer buttonContent={<MenuIcon />}>
+    <Drawer buttonStyle="hover:bg-zinc-100" buttonContent={<MenuIcon />}>
       <ul>
         <li>
           <Link href="/catalogs">
@@ -35,7 +35,12 @@ const NavigationDrawer: Component = () => {
         </li>
         <li>
           <Link href="/sales">
-            <LinkContent>売上</LinkContent>
+            <LinkContent>頒布履歴</LinkContent>
+          </Link>
+        </li>
+        <li>
+          <Link href="/about">
+            <LinkContent>このアプリについて</LinkContent>
           </Link>
         </li>
       </ul>

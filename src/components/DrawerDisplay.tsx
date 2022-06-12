@@ -11,7 +11,7 @@ const DrawerDisplay: Component<DrawerDisplayProps> = (props) => {
   return (
     <Show when={props.open}>
       <div class="flex fixed top-0 left-0 z-50 flex-row w-full h-full bg-black/30">
-        <div class="fixed top-0 z-50 w-1/3 min-w-min h-full bg-white drop-shadow-2xl lg:w-1/5">
+        <div class="fixed top-0 z-50 w-1/2 min-w-min h-full bg-white drop-shadow-2xl sm:w-1/3 lg:w-1/5">
           {props.children}
         </div>
         <button

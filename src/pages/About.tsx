@@ -2,6 +2,7 @@ import { For, createResource } from 'solid-js';
 import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
+import NavigationDrawer from '@/components/NavigationDrawer';
 
 type PackageInfo = {
   self: {
@@ -31,14 +32,7 @@ const About = () => {
   const [packageInfo] = createResource(fetchPackageInfo);
 
   return (
-    <AppLayout
-      titleElement="Reziについて"
-      prevElement={
-        <Link href="/" class="navigationButton">
-          ←
-        </Link>
-      }
-    >
+    <AppLayout titleElement="Reziについて" prevElement={<NavigationDrawer />}>
       <div class="p-2">
         <h2 class="my-4 text-2xl">バージョン情報</h2>
 
@@ -57,8 +51,8 @@ const About = () => {
         <p class="my-4">
           このプログラムは役立つことを願って頒布されていますが、<em>いかなる保証もありません</em>。
           <em>商品性</em> や <em>特定目的適合性</em>{' '}
-          に対する保証は、暗示されたものも含めて存在しません。
-          詳しくは、GNUアフェロー一般公衆ライセンスをご覧ください。
+          に対する保証は暗示されたものも含めて存在しません。
+          詳しくはGNUアフェロー一般公衆ライセンスをご覧ください。
         </p>
 
         <p class="my-4">
