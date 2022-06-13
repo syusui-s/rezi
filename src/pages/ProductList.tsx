@@ -285,7 +285,11 @@ const CatalogView: Component = () => {
     <Show when={getCatalog() != null} fallback={<NotFound />}>
       <AppLayout
         titleElement={getCatalog()?.name ?? ''}
-        prevElement={<NavigationDrawer />}
+        prevElement={
+          <Link href="/catalogs/" class="navigationButton">
+            ←
+          </Link>
+        }
         nextElement={
           <Show
             when={editing()}

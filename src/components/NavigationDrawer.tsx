@@ -45,7 +45,7 @@ const ChartBarIcon: Component = () => (
 );
 
 const LinkContent: Component<{ icon?: JSX.Element; children?: JSX.Element }> = (props) => (
-  <div class="flex flex-row items-center py-8 px-4 text-xl font-bold hover:bg-zinc-100">
+  <div class="flex flex-row items-center p-4 text-xl font-bold hover:bg-zinc-100 active:bg-zinc-200">
     <Show when={props.icon != null}>
       <div class="mr-4">{props.icon}</div>
     </Show>

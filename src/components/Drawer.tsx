@@ -13,7 +13,10 @@ const Drawer: Component<DrawerProps> = (props) => {
 
   return (
     <>
-      <button style="bg-zinc-100" onClick={() => setOpen(true)}>
+      <button
+        class="p-2 h-full hover:bg-zinc-100 active:bg-zinc-200 md:py-4"
+        onClick={() => setOpen(true)}
+      >
         {props.buttonContent}
       </button>
       <DrawerDisplay open={open()} onClose={() => setOpen(false)}>
