@@ -10,7 +10,7 @@ export type AppLayoutProps = {
 const AppLayout: Component<AppLayoutProps> = (props) => {
   return (
     <div>
-      <div class="sticky top-0 z-50 mb-4 w-full h-10 bg-white shadow">
+      <div class="sticky top-0 z-50 mb-4 w-full h-10 bg-white shadow md:h-14">
         <div class="container flex justify-between items-center mx-auto h-full xl:w-8/12">
           <div class="flex basis-1/3 justify-start px-2">{props.prevElement}</div>
           <div class="grow text-xl font-bold text-center">{props.titleElement}</div>

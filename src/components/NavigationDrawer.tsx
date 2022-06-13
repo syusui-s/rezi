@@ -1,3 +1,4 @@
+import { Show } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Link } from 'solid-app-router';
 
@@ -20,8 +21,36 @@ const MenuIcon: Component = () => (
   </svg>
 );
 
-const LinkContent: Component<{ children?: JSX.Element }> = (props) => (
-  <span class="block py-8 px-4 text-xl font-bold hover:bg-zinc-100">{props.children}</span>
+const ViewGridIcon: Component = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-8 h-8"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+    />
+  </svg>
+);
+
+const ChartBarIcon: Component = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+  </svg>
+);
+
+const LinkContent: Component<{ icon?: JSX.Element; children?: JSX.Element }> = (props) => (
+  <div class="flex flex-row items-center py-8 px-4 text-xl font-bold hover:bg-zinc-100">
+    <Show when={props.icon != null}>
+      <div class="mr-4">{props.icon}</div>
+    </Show>
+    {props.children}
+  </div>
 );
 
 const NavigationDrawer: Component = () => {
@@ -30,12 +59,12 @@ const NavigationDrawer: Component = () => {
       <ul>
         <li>
           <Link href="/catalogs">
-            <LinkContent>カタログ一覧</LinkContent>
+            <LinkContent icon={<ViewGridIcon />}>カタログ一覧</LinkContent>
           </Link>
         </li>
         <li>
           <Link href="/sales">
-            <LinkContent>売上</LinkContent>
+            <LinkContent icon={<ChartBarIcon />}>頒布記録</LinkContent>
           </Link>
         </li>
         <li>

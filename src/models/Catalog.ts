@@ -10,6 +10,10 @@ export default class Catalog {
     readonly products: Record<string, Product>,
   ) {}
 
+  static create(id: string, name: string) {
+    return new Catalog(id, name, {});
+  }
+
   saveProduct(product: Product): Catalog {
     const newProducts = { ...this.products };
     newProducts[product.id] = product;

@@ -9,6 +9,7 @@ import { serializeCatalogs, deserializeCatalogs } from './serialize/catalog';
 export type UseCatalogs = {
   catalogs: Accessor<Record<string, Catalog>>;
   findCatalog: (catalogId: string) => Catalog | undefined;
+  saveCatalog: (catalog: Catalog) => void;
   saveProduct: (catalogId: string, product: Product) => void;
   removeProduct: (catalogId: string, productId: string) => void;
   findProduct: (catalogId: string, productId: string) => Product | undefined;
@@ -46,13 +47,16 @@ const useCatalogs = (): UseCatalogs => {
     return catalogs()[catalogId];
   };
 
+  const saveCatalog = (catalog: Catalog) => {
+    const newCatalogs = { ...catalogs() };
+    newCatalogs[catalog.id] = catalog;
+    setCatalogs(newCatalogs);
+  };
+
   const updateCatalog = (catalogId: string, f: (catalog: Catalog) => Catalog) => {
     const catalog = findCatalog(catalogId);
     if (catalog == null) return;
-
-    const newCatalogs = { ...catalogs() };
-    newCatalogs[catalogId] = f(catalog);
-    setCatalogs(newCatalogs);
+    saveCatalog(f(catalog));
   };
 
   const saveProduct = (catalogId: string, product: Product) => {
@@ -69,6 +73,7 @@ const useCatalogs = (): UseCatalogs => {
   return {
     catalogs,
     findCatalog,
+    saveCatalog,
     saveProduct,
     removeProduct,
     findProduct,

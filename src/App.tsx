@@ -2,6 +2,7 @@ import type { Component } from 'solid-js';
 import { Routes, Route, Navigate } from 'solid-app-router';
 
 import CatalogList from '@/pages/CatalogList';
+import CatalogEdit from '@/pages/CatalogEdit';
 import ProductList from '@/pages/ProductList';
 import ProductView from '@/pages/ProductView';
 import SaleList from '@/pages/SaleList';
@@ -11,6 +12,8 @@ import About from '@/pages/About';
 const App: Component = () => (
   <Routes>
     <Route path="/catalogs" element={<CatalogList />} />
+    <Route path="/catalogs/new" element={<CatalogEdit />} />
+    <Route path="/catalogs/:id" element={<CatalogEdit />} />
     <Route path="/catalogs/:id/products" element={<ProductList />} />
     <Route path="/catalogs/:catalogId/products/new" element={<ProductView />} />
     <Route path="/catalogs/:catalogId/products/:id" element={<ProductView />} />

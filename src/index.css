@@ -17,7 +17,7 @@ code {
 }
 
 .navigationButton {
-  @apply text-xl font-bold text-blue-500 hover:text-blue-600;
+  @apply inline-block py-4 px-1 text-xl font-bold text-blue-500 hover:text-blue-600;
 }
 
 .link {
