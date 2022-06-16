@@ -37,7 +37,9 @@ const CatalogEdit: Component = () => {
           </Link>
         }
       >
-        <CatalogForm catalog={getCatalog()} onSubmit={handleCatalogFormSubmit} />
+        <div class="px-4">
+          <CatalogForm catalog={getCatalog()} onSubmit={handleCatalogFormSubmit} />
+        </div>
       </AppLayout>
     </Show>
   );

@@ -1,6 +1,6 @@
 import { Component, JSX, onMount } from 'solid-js';
 
-import Catalog from '@/models/Product';
+import Catalog from '@/models/Catalog';
 
 export type CatalogFormInput = {
   name: string;

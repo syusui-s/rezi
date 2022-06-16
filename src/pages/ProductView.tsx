@@ -53,7 +53,9 @@ const ManageProduct: Component = () => {
           </Link>
         }
       >
-        <ProductForm product={getProduct()} onSubmit={handleProductFormSubmit} />
+        <div class="px-4">
+          <ProductForm product={getProduct()} onSubmit={handleProductFormSubmit} />
+        </div>
       </AppLayout>
     </Show>
   );
