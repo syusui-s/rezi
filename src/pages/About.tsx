@@ -36,7 +36,13 @@ const About = () => {
       <div class="p-2">
         <h2 class="my-4 text-2xl">バージョン情報</h2>
 
-        <p class="my-4">Rezi v0.0.0</p>
+        <div>
+          <img src="/src/assets/icon.png" alt="Logo" width="128" height="128" />
+        </div>
+
+        <p class="my-4">
+          Rezi <span id="app-version">v{packageInfo()?.self?.version}</span>
+        </p>
 
         <h2 class="my-4 text-2xl">利用規約</h2>
 
