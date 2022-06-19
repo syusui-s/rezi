@@ -10,6 +10,7 @@ export type UseCatalogs = {
   catalogs: Accessor<Record<string, Catalog>>;
   findCatalog: (catalogId: string) => Catalog | undefined;
   saveCatalog: (catalog: Catalog) => void;
+  removeCatalog: (catalogId: string) => void;
   saveProduct: (catalogId: string, product: Product) => void;
   removeProduct: (catalogId: string, productId: string) => void;
   findProduct: (catalogId: string, productId: string) => Product | undefined;
@@ -59,6 +60,12 @@ const useCatalogs = (): UseCatalogs => {
     saveCatalog(f(catalog));
   };
 
+  const removeCatalog = (catalogId: string) => {
+    const newCatalogs = { ...catalogs() };
+    delete newCatalogs[catalogId];
+    setCatalogs(newCatalogs);
+  };
+
   const saveProduct = (catalogId: string, product: Product) => {
     updateCatalog(catalogId, (catalog) => catalog.saveProduct(product));
   };
@@ -74,6 +81,7 @@ const useCatalogs = (): UseCatalogs => {
     catalogs,
     findCatalog,
     saveCatalog,
+    removeCatalog,
     saveProduct,
     removeProduct,
     findProduct,
