@@ -1,13 +1,16 @@
-import { For, createMemo } from 'solid-js';
+import { Show, For, createMemo } from 'solid-js';
 import type { Component } from 'solid-js';
 
 import AppLayout from '@/components/AppLayout';
 import NavigationDrawer from '@/components/NavigationDrawer';
 import PriceDisplay from '@/components/PriceDisplay';
+import ProductCover from '@/components/ProductCover';
 import useSales from '@/useSales';
+import useCatalogs from '@/useCatalogs';
 import type Sale from '@/models/Sale';
 
 type SaleStat = {
+  catalogId: string;
   productId: string;
   name: string;
   totalCount: number;
@@ -34,6 +37,7 @@ const statSalesByProduct = (sales: Sale[]): SaleStat[] => {
       const totalPrice = stat?.totalPrice ?? 0;
       const totalCount = stat?.totalCount ?? 0;
       productStat.set(item.productId, {
+        catalogId: item.catalogId,
         productId: item.productId,
         name: item.name,
         totalPrice: totalPrice + item.price * item.quantity,
@@ -45,6 +49,7 @@ const statSalesByProduct = (sales: Sale[]): SaleStat[] => {
 
 const SaleList: Component = () => {
   const { sales } = useSales();
+  const { findProduct } = useCatalogs();
 
   const salesGroupedByDate = createMemo(() => groupSalesByDate(sales()));
 
@@ -58,14 +63,24 @@ const SaleList: Component = () => {
             return (
               <div class="p-4 mb-4 rounded-md border">
                 <h2 class="pb-4 text-2xl font-bold text-center">{date}</h2>
-                <div class="p-4 mb-4 rounded-md border">
+                <div class="grid grid-cols-1 p-4 mb-4 rounded-md border md:grid-cols-2">
                   <For each={salesStat}>
-                    {(stat) => (
-                      <div class="flex items-center p-2">
-                        <div class="text-xl font-bold">{stat.name}</div>
-                        <div class="ml-4 text-4xl">{stat.totalCount}</div>
-                      </div>
-                    )}
+                    {(stat) => {
+                      const product = findProduct(stat.catalogId, stat.productId);
+                      return (
+                        <div class="flex items-center py-1">
+                          <div class="shrink-0 w-16 h-16">
+                            <Show when={product}>{(p) => <ProductCover product={p} />}</Show>
+                          </div>
+                          <div class="shrink-0 mr-8 w-16 text-4xl font-bold text-right">
+                            {stat.totalCount}
+                          </div>
+                          <div class="overflow-hidden text-2xl text-ellipsis whitespace-pre break-all">
+                            {stat.name}
+                          </div>
+                        </div>
+                      );
+                    }}
                   </For>
                 </div>
                 <For each={groupedSales}>

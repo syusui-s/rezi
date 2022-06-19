@@ -17,18 +17,28 @@ export type UseSales = {
 const [sales, setSales] = createSignal<Sale[]>([]);
 
 const useSales = (): UseSales => {
+  const [loaded, setLoaded] = createSignal<boolean>(false);
   const { findProduct } = useCatalogs();
 
   onMount(() => {
     const data = globalThis.localStorage.getItem('sales');
+
+    if (data === null) {
+      setLoaded(true);
+      return;
+    }
+
     const deserialized = deserializeSales(data);
-    if (deserialized == null) return;
-    setSales(deserialized);
+    if (deserialized != null) {
+      setSales(deserialized);
+    }
+    setLoaded(true);
   });
 
   createEffect(() => {
-    const data = serializeSales(sales());
-    window.localStorage.setItem('sales', data);
+    if (loaded()) {
+      window.localStorage.setItem('sales', serializeSales(sales()));
+    }
   });
 
   const register = (catalog: Catalog, cart: Cart) => {
@@ -37,7 +47,7 @@ const useSales = (): UseSales => {
       .map((cartItem) => {
         const product = findProduct(catalog.id, cartItem.productId);
         if (product == null) return null;
-        return SaleItem.fromProduct(product, cartItem.quantity);
+        return SaleItem.fromProduct(catalog.id, product, cartItem.quantity);
       })
       .filter(<T>(e: T | null): e is T => e != null);
     const sale = new Sale(generateId(), new Date(), saleItems);

@@ -5,6 +5,7 @@ import Product from '@/models/Product';
  */
 export default class SaleItem {
   constructor(
+    readonly catalogId: string,
     readonly productId: string,
     /** 品名 */
     readonly name: string,
@@ -14,7 +15,7 @@ export default class SaleItem {
     readonly quantity: number,
   ) {}
 
-  static fromProduct(product: Product, quantity: number): SaleItem {
-    return new SaleItem(product.id, product.name, product.price, quantity);
+  static fromProduct(catalogId: string, product: Product, quantity: number): SaleItem {
+    return new SaleItem(catalogId, product.id, product.name, product.price, quantity);
   }
 }

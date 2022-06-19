@@ -8,6 +8,7 @@ export type SaleSerialized = {
 };
 
 export type SaleItemSerialized = {
+  catalogId: string;
   productId: string;
   name: string;
   price: number;
@@ -21,6 +22,7 @@ export const deserializeSales = (data: string | null): Sale[] | null => {
   return parsed.map((rawSale) => {
     const items = rawSale.items.map((rawSaleItem) => {
       return new SaleItem(
+        rawSaleItem.catalogId,
         rawSaleItem.productId,
         rawSaleItem.name,
         rawSaleItem.price,
@@ -36,6 +38,7 @@ export const serializeSales = (sales: Sale[]): string => {
     id: sale.id,
     soldAt: sale.soldAt.toISOString(),
     items: sale.items.map((saleItem) => ({
+      catalogId: saleItem.catalogId,
       productId: saleItem.productId,
       name: saleItem.name,
       price: saleItem.price,
