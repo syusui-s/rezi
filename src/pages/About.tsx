@@ -1,5 +1,4 @@
 import { For, createResource } from 'solid-js';
-import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import NavigationDrawer from '@/components/NavigationDrawer';

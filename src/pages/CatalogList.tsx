@@ -61,6 +61,7 @@ const CatalogList: Component = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    // eslint-disable-next-line no-alert
                     if (window.confirm('本当に削除しますか？')) {
                       removeCatalog(catalog.id);
                     }

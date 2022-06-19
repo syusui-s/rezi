@@ -1,6 +1,5 @@
 import { For, createMemo } from 'solid-js';
 import type { Component } from 'solid-js';
-import { Link } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
 import NavigationDrawer from '@/components/NavigationDrawer';

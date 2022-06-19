@@ -1,9 +1,8 @@
-import { For, Show, onMount, createSignal } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Link, useNavigate, useParams } from 'solid-app-router';
 
 import AppLayout from '@/components/AppLayout';
-import NavigationDrawer from '@/components/NavigationDrawer';
 import PriceDisplay from '@/components/PriceDisplay';
 import ProductCover from '@/components/ProductCover';
 import type Product from '@/models/Product';

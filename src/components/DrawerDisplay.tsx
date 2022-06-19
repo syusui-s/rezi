@@ -1,6 +1,4 @@
-import { Show } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
-// import { Transition } from 'solid-transition-group';
 
 export type DrawerDisplayProps = {
   open: boolean;
