@@ -29,7 +29,7 @@ jobs:
       - name: Test
         run: npm run test
       - name: Build
-        run: npm run build
+        run: npm run build -- --base="https://syusui-s.github.io/rezi/"
       - name: Check license
         run: npm run checkLicense
       - name: Deploy
