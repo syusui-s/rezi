@@ -21,7 +21,7 @@ type PackageInfo = {
 };
 
 const fetchPackageInfo = async (): Promise<PackageInfo> => {
-  const res = await fetch('/packageInfo.json');
+  const res = await fetch(`${import.meta.env.BASE_URL}/packageInfo.json`);
   const body = await res.text();
   return JSON.parse(body) as PackageInfo;
 };
