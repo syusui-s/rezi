@@ -2,6 +2,8 @@ import { For, createResource } from 'solid-js';
 
 import AppLayout from '@/components/AppLayout';
 import NavigationDrawer from '@/components/NavigationDrawer';
+import resolveAsset from '@/utils/resolveAsset';
+import iconUrl from '@/assets/icon.png';
 
 type PackageInfo = {
   self: {
@@ -21,7 +23,7 @@ type PackageInfo = {
 };
 
 const fetchPackageInfo = async (): Promise<PackageInfo> => {
-  const res = await fetch(`${import.meta.env.BASE_URL}/packageInfo.json`);
+  const res = await fetch(resolveAsset('packageInfo.json'));
   const body = await res.text();
   return JSON.parse(body) as PackageInfo;
 };
@@ -36,7 +38,7 @@ const About = () => {
         <h2 class="my-4 text-2xl">バージョン情報</h2>
 
         <div>
-          <img src="/src/assets/icon.png" alt="Logo" width="128" height="128" />
+          <img src={iconUrl} alt="Logo" width="128" height="128" />
         </div>
 
         <p class="my-4">
