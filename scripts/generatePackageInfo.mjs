@@ -1,11 +1,8 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import util from 'util';
 
-const readFile = util.promisify(fs.readFile);
-const writeFile = util.promisify(fs.writeFile);
-
-const readDepFile = (key, filename) => readFile(path.resolve(key, filename), { encoding: 'utf8' });
+const readDepFile = (key, filename) => fs.readFile(path.resolve(key, filename), { encoding: 'utf8' });
 
 const getPackageInfo = async (key) => {
   try {
@@ -33,7 +30,7 @@ const getLicense = async (key) =>
     });
 
 const generatePackages = async function (selfName) {
-  const packageLockJson = await readFile('./package-lock.json', { encoding: 'utf8' });
+  const packageLockJson = await fs.readFile('./package-lock.json', { encoding: 'utf8' });
   const packageLock = JSON.parse(packageLockJson);
 
   const insertedPackages = new Set();
@@ -65,12 +62,12 @@ const generatePackages = async function (selfName) {
 };
 
 export default async function generateDependencyJson() {
-  const packageJson = await readFile('./package.json', { encoding: 'utf8' });
+  const packageJson = await fs.readFile('./package.json', { encoding: 'utf8' });
   const selfPackageInfo = JSON.parse(packageJson);
   const { name, author, version, homepage } = selfPackageInfo;
 
   const packages = await generatePackages(name);
-  const myLicense = await readFile('./LICENSE', { encoding: 'utf8' });
+  const myLicense = await fs.readFile('./LICENSE', { encoding: 'utf8' });
 
   const result = {
     self: {
@@ -83,7 +80,8 @@ export default async function generateDependencyJson() {
     packages,
   };
 
-  await writeFile('./public/packageInfo.json', JSON.stringify(result, null, 2), {
+  await fs.mkdir('./public/', { recursive: true });
+  await fs.writeFile('./public/packageInfo.json', JSON.stringify(result, null, 2), {
     encoding: 'utf8',
   });
 }
