@@ -16,6 +16,8 @@ export type UseCatalogs = {
   findProduct: (catalogId: string, productId: string) => Product | undefined;
 };
 
+const LOCAL_STORAGE_KEY = 'ReziCatalogs';
+
 const defaultCatalogId = generateId();
 const defaultCatalogs = { [defaultCatalogId]: new Catalog(defaultCatalogId, 'カタログ', {}) };
 
@@ -24,7 +26,7 @@ const useCatalogs = (): UseCatalogs => {
   const [catalogs, setCatalogs] = createSignal<Record<string, Catalog>>(defaultCatalogs);
 
   onMount(() => {
-    const lastCatalogs = globalThis.localStorage.getItem('catalogs');
+    const lastCatalogs = globalThis.localStorage.getItem(LOCAL_STORAGE_KEY);
 
     if (lastCatalogs === null) {
       setLoaded(true);
@@ -40,7 +42,7 @@ const useCatalogs = (): UseCatalogs => {
 
   createEffect(() => {
     if (loaded()) {
-      window.localStorage.setItem('catalogs', serializeCatalogs(catalogs()));
+      globalThis.localStorage.setItem(LOCAL_STORAGE_KEY, serializeCatalogs(catalogs()));
     }
   });
 

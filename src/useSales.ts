@@ -14,6 +14,8 @@ export type UseSales = {
   register: (catalog: Catalog, cart: Cart) => void;
 };
 
+const LOCAL_STORAGE_KEY = 'ReziSales';
+
 const [sales, setSales] = createSignal<Sale[]>([]);
 
 const useSales = (): UseSales => {
@@ -21,7 +23,7 @@ const useSales = (): UseSales => {
   const { findProduct } = useCatalogs();
 
   onMount(() => {
-    const data = globalThis.localStorage.getItem('sales');
+    const data = globalThis.localStorage.getItem(LOCAL_STORAGE_KEY);
 
     if (data === null) {
       setLoaded(true);
@@ -37,7 +39,7 @@ const useSales = (): UseSales => {
 
   createEffect(() => {
     if (loaded()) {
-      window.localStorage.setItem('sales', serializeSales(sales()));
+      globalThis.localStorage.setItem(LOCAL_STORAGE_KEY, serializeSales(sales()));
     }
   });
 
