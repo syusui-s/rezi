@@ -17,8 +17,8 @@ const DrawerDisplay: Component<DrawerDisplayProps> = (props) => {
       }}
     >
       <div
-        class="fixed top-0 z-50 w-1/2 min-w-min h-full bg-white drop-shadow-2xl transition-all sm:w-1/3 lg:w-1/5"
-        classList={{ '-left-full': !props.open, 'left-0': props.open }}
+        class="fixed top-0 z-50 w-1/2 min-w-min h-full bg-white drop-shadow-2xl transition-all translate-x-0 sm:w-1/3 lg:w-1/5"
+        classList={{ '-translate-x-full': !props.open }}
       >
         <button
           aria-label="Close drawer"
