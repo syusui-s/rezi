@@ -8,14 +8,7 @@ import ProductCover from '@/components/ProductCover';
 import useSales from '@/useSales';
 import useCatalogs from '@/useCatalogs';
 import type Sale from '@/models/Sale';
-
-type SaleStat = {
-  catalogId: string;
-  productId: string;
-  name: string;
-  totalCount: number;
-  totalPrice: number;
-};
+import { statSalesByProduct, sortStatsByCountDesc } from '@/models/SaleStat';
 
 const groupSalesByDate = (sales: Sale[]) => {
   const dateSales = new Map<string, Sale[]>();
@@ -26,25 +19,6 @@ const groupSalesByDate = (sales: Sale[]) => {
     dateSales.set(key, values);
   });
   return [...dateSales.entries()];
-};
-
-const statSalesByProduct = (sales: Sale[]): SaleStat[] => {
-  const productStat = new Map<string, SaleStat>();
-  sales
-    .flatMap((sale) => sale.items)
-    .forEach((item) => {
-      const stat = productStat.get(item.productId);
-      const totalPrice = stat?.totalPrice ?? 0;
-      const totalCount = stat?.totalCount ?? 0;
-      productStat.set(item.productId, {
-        catalogId: item.catalogId,
-        productId: item.productId,
-        name: item.name,
-        totalPrice: totalPrice + item.price * item.quantity,
-        totalCount: totalCount + item.quantity,
-      });
-    });
-  return [...productStat.values()].sort((a, b) => b.totalCount - a.totalCount);
 };
 
 const SaleList: Component = () => {
@@ -58,7 +32,7 @@ const SaleList: Component = () => {
       <div>
         <For each={salesGroupedByDate()}>
           {([date, groupedSales]) => {
-            const salesStat = statSalesByProduct(groupedSales);
+            const salesStat = sortStatsByCountDesc(statSalesByProduct(groupedSales));
 
             return (
               <div class="p-4 mb-4 rounded-md border">

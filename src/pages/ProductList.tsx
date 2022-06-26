@@ -1,4 +1,4 @@
-import { For, Show, createSignal } from 'solid-js';
+import { For, Show, createSignal, createMemo } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Link, useNavigate, useParams } from 'solid-app-router';
 
@@ -6,11 +6,13 @@ import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
 import ProductCover from '@/components/ProductCover';
 import type Product from '@/models/Product';
+import CartItem from '@/models/CartItem';
+import { statSalesByProduct } from '@/models/SaleStat';
+import type { SaleStat } from '@/models/SaleStat';
 import NotFound from '@/pages/NotFound';
 import useCart from '@/useCart';
 import useCatalogs from '@/useCatalogs';
 import useSales from '@/useSales';
-import CartItem from '@/models/CartItem';
 
 /*
  * AddItemIcon is from heroicons.
@@ -49,6 +51,7 @@ const QuantityCubes: Component<{ quantity: number }> = (props) => (
 type ProductDisplayProps = {
   catalogId: string | undefined;
   product: Product;
+  saleStat?: SaleStat;
   quantity: number;
   addToCart: (productId: string) => void;
   removeProduct: (productId: string) => void;
@@ -119,8 +122,11 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
       <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
         {props.product.name}
       </div>
-      <div class="font-mono text-base font-bold">
-        <PriceDisplay price={props.product.price} />
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+        <div class="text-base font-bold leading-5 sm:text-lg">
+          <PriceDisplay price={props.product.price} />
+        </div>
+        <div class="text-xs leading-3 sm:text-base">↑ {props.saleStat?.totalCount ?? 0}</div>
       </div>
       <Show when={props.editing}>
         <div>
@@ -191,10 +197,16 @@ const CatalogView: Component = () => {
     return id ? findCatalog(id) : undefined;
   };
 
+  const getProduct = (productId: string) => {
+    const catalog = getCatalog();
+    return catalog && findProduct(catalog.id, productId);
+  };
+
   const { cart, addToCart, removeFromCart, clearCart, totalPrice, totalQuantity } = useCart({
     products: () => getCatalog()?.getProductArray() ?? [],
   });
-  const { register } = useSales();
+  const { sales, register } = useSales();
+  const saleStats = createMemo(() => statSalesByProduct(sales()));
 
   const handleRegister = () => {
     const catalog = getCatalog();
@@ -203,6 +215,19 @@ const CatalogView: Component = () => {
     clearCart();
   };
 
+  const cartItemDisplay = (cartItem: CartItem) => (
+    <Show when={getProduct(cartItem.productId)}>
+      {(product) => (
+        <CartItemDisplay
+          product={product}
+          cartItem={cartItem}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+        />
+      )}
+    </Show>
+  );
+
   const cartDisplay = (
     <Show when={!editing() && getCatalog() != null}>
       <div
@@ -210,22 +235,7 @@ const CatalogView: Component = () => {
         style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
       >
         <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
-          <For each={cart().content()}>
-            {(cartItem) => {
-              const catalog = getCatalog();
-              const product = catalog && findProduct(catalog.id, cartItem.productId);
-              if (product == null) return null;
-
-              return (
-                <CartItemDisplay
-                  product={product}
-                  cartItem={cartItem}
-                  addToCart={addToCart}
-                  removeFromCart={removeFromCart}
-                />
-              );
-            }}
-          </For>
+          <For each={cart().content()}>{cartItemDisplay}</For>
         </div>
         <div class="flex flex-col flex-auto justify-end items-end md:px-2 md:h-full">
           <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
@@ -256,26 +266,32 @@ const CatalogView: Component = () => {
     </Show>
   );
 
+  const productDisplay = (product: Product) => {
+    const saleStat = () => saleStats().get(product.id);
+    return (
+      <ProductDisplay
+        catalogId={catalogId()}
+        product={product}
+        saleStat={saleStat()}
+        quantity={cart().find(product.id)?.quantity ?? 0}
+        addToCart={addToCart}
+        removeProduct={(productId) => {
+          const catalog = getCatalog();
+          if (catalog == null) return;
+          removeProduct(catalog.id, productId);
+        }}
+        editing={editing()}
+      />
+    );
+  };
+
   const productsDisplay = (
     <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
       <For
         each={getCatalog()?.getProductArray() ?? []}
         fallback={<div>頒布物がまだ登録されていません</div>}
       >
-        {(product) => (
-          <ProductDisplay
-            catalogId={catalogId()}
-            product={product}
-            quantity={cart().find(product.id)?.quantity ?? 0}
-            addToCart={addToCart}
-            removeProduct={(productId) => {
-              const catalog = getCatalog();
-              if (catalog == null) return;
-              removeProduct(catalog.id, productId);
-            }}
-            editing={editing()}
-          />
-        )}
+        {productDisplay}
       </For>
     </div>
   );
