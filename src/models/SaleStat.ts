@@ -30,3 +30,13 @@ export const statSalesByProduct = (sales: Sale[]): Map<string, SaleStat> => {
 export const sortStatsByCountDesc = (saleStats: Map<string, SaleStat>): SaleStat[] => {
   return [...saleStats.values()].sort((a, b) => b.totalCount - a.totalCount);
 };
+
+export const groupStatsByCatalog = (saleStats: SaleStat[]): Map<string, SaleStat[]> => {
+  const result = new Map<string, SaleStat[]>();
+  saleStats.forEach((saleStat) => {
+    const stats = result.get(saleStat.catalogId) ?? [];
+    stats.push(saleStat);
+    result.set(saleStat.catalogId, stats);
+  });
+  return result;
+};
