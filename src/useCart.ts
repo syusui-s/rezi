@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js';
-import type { Accessor } from 'solid-js';
+import type { Accessor, Setter } from 'solid-js';
 
 import Product from '@/models/Product';
 import Cart from '@/models/Cart';
@@ -10,6 +10,7 @@ type UseCartProps = {
 
 type UseCart = {
   cart: Accessor<Cart>;
+  setCart: Setter<Cart>;
   addToCart: (productId: string, quantity?: number) => void;
   removeFromCart: (productId: string, quantity?: number) => void;
   clearCart: () => void;
@@ -47,6 +48,7 @@ const useCart = ({ products }: UseCartProps): UseCart => {
 
   return {
     cart,
+    setCart,
     addToCart,
     removeFromCart,
     clearCart,

@@ -12,6 +12,7 @@ import { deserializeSales, serializeSales } from '@/serialize/sale';
 export type UseSales = {
   sales: Accessor<Sale[]>;
   register: (catalog: Catalog, cart: Cart) => void;
+  remove: (catalogId: string) => void;
 };
 
 const LOCAL_STORAGE_KEY = 'ReziSales';
@@ -57,9 +58,14 @@ const useSales = (): UseSales => {
     setSales([...sales(), sale]);
   };
 
+  const remove = (cartId: string) => {
+    setSales([...sales()].filter((e) => e.id !== cartId));
+  };
+
   return {
     sales,
     register,
+    remove,
   };
 };
 

@@ -41,7 +41,7 @@ const QuantityCubes: Component<{ quantity: number }> = (props) => (
       {() => (
         <div
           class="w-3 h-3 bg-white md:w-4 md:h-4"
-          style="box-shadow: 2px 2px 2px rgba(0,0,0,0.7)"
+          style={{ 'box-shadow': '2px 2px 2px rgba(0,0,0,0.7)' }}
         />
       )}
     </For>
@@ -87,14 +87,14 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
     <Show when={props.quantity > 0}>
       <div
         class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
-        style="background: rgba(0,0,0,0.4)"
+        style={{ background: 'rgba(0,0,0,0.4)' }}
       >
         <Show
           when={props.quantity <= 10}
           fallback={
             <div
               class="font-mono text-4xl font-bold text-white sm:text-5xl md:text-6xl"
-              style="text-shadow: 1px 1px 4px #000"
+              style={{ 'text-shadow': '1px 1px 4px #000' }}
             >
               {props.quantity}
             </div>
@@ -232,7 +232,7 @@ const CatalogView: Component = () => {
     <Show when={!editing() && getCatalog() != null}>
       <div
         class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
-        style="box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-height: 40vh;"
+        style={{ 'box-shadow': '0 2px 10px rgba(0,0,0,0.2)', 'max-height': '40vh' }}
       >
         <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
           <For each={cart().content()}>{cartItemDisplay}</For>

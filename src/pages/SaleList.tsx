@@ -11,7 +11,7 @@ import type Sale from '@/models/Sale';
 import type { SaleStat } from '@/models/SaleStat';
 import { statSalesByProduct, sortStatsByCountDesc, groupStatsByCatalog } from '@/models/SaleStat';
 
-const GroupingMethods = ['catalog', 'daily'] as const;
+const GroupingMethods = ['daily', 'catalog'] as const;
 type GroupingMethod = typeof GroupingMethods[number];
 
 const groupSalesByDate = (sales: Sale[]) => {
@@ -46,8 +46,8 @@ const GroupingMethodSelect: Component<GroupingMethodSelectProps> = (props) => {
 
   return (
     <select value={props.value} onChange={handleChange}>
-      <option value="catalog">カタログ別</option>
       <option value="daily">日別</option>
+      <option value="catalog">カタログ別</option>
     </select>
   );
 };
@@ -84,6 +84,8 @@ const SaleStatsDisplay: Component<SaleStatsDisplayProps> = (props) => {
 type SaleDisplayProps = {
   sale: Sale;
   dateRender: (date: Date) => JSX.Element;
+  editing: boolean;
+  onRemove: (saleId: string) => void;
 };
 
 const SaleDisplay: Component<SaleDisplayProps> = (props) => {
@@ -105,6 +107,17 @@ const SaleDisplay: Component<SaleDisplayProps> = (props) => {
           }}
         </For>
       </ul>
+      <div class="text-right">
+        <Show when={props.editing}>
+          <button
+            type="button"
+            onClick={() => props.onRemove(props.sale.id)}
+            class="text-xs text-red-500 md:text-base"
+          >
+            削除
+          </button>
+        </Show>
+      </div>
     </div>
   );
 };
@@ -112,6 +125,8 @@ const SaleDisplay: Component<SaleDisplayProps> = (props) => {
 type SalesDisplayProps = {
   title: string;
   sales: Sale[];
+  editing: boolean;
+  onRemove: (saleId: string) => void;
 };
 
 const SalesDisplay: Component<SalesDisplayProps> = (props) => {
@@ -122,21 +137,55 @@ const SalesDisplay: Component<SalesDisplayProps> = (props) => {
       <h2 class="pb-4 text-2xl font-bold text-center">{props.title}</h2>
       <SaleStatsDisplay saleStats={saleStats()} />
       <For each={props.sales}>
-        {(sale) => <SaleDisplay sale={sale} dateRender={(date) => date.toLocaleTimeString()} />}
+        {(sale) => (
+          <SaleDisplay
+            sale={sale}
+            dateRender={(date) => date.toLocaleTimeString()}
+            editing={props.editing}
+            onRemove={props.onRemove}
+          />
+        )}
       </For>
     </>
   );
 };
 
 const SaleList: Component = () => {
-  const { sales } = useSales();
+  const [editing, setEditing] = createSignal<boolean>(false);
+  const { sales, remove: removeSale } = useSales();
   const { findCatalog } = useCatalogs();
-  const [groupingMethod, setGroupingMethod] = createSignal<GroupingMethod>('catalog');
+  const [groupingMethod, setGroupingMethod] = createSignal<GroupingMethod>('daily');
 
   const salesGroupedByDate = createMemo(() => groupSalesByDate(sales()));
 
+  const handleRemove = (saleId: string) => {
+    // eslint-disable-next-line no-alert
+    if (window.confirm('本当に削除しますか？')) {
+      removeSale(saleId);
+    }
+  };
+
   return (
-    <AppLayout titleElement="頒布履歴" prevElement={<NavigationDrawer />}>
+    <AppLayout
+      titleElement="頒布履歴"
+      prevElement={<NavigationDrawer />}
+      nextElement={
+        <Show
+          when={editing()}
+          fallback={
+            <Show when={groupingMethod() === 'daily'}>
+              <button class="navigationButton" onClick={() => setEditing(true)}>
+                編集
+              </button>
+            </Show>
+          }
+        >
+          <button class="navigationButton" onClick={() => setEditing(false)}>
+            完了
+          </button>
+        </Show>
+      }
+    >
       <div class="p-4 mb-4 rounded-md border">
         <div class="py-4">
           <GroupingMethodSelect value={groupingMethod()} onChange={setGroupingMethod} />
@@ -163,7 +212,14 @@ const SaleList: Component = () => {
           </Match>
           <Match when={groupingMethod() === 'daily'}>
             <For each={salesGroupedByDate()}>
-              {([date, groupedSales]) => <SalesDisplay title={date} sales={groupedSales} />}
+              {([date, groupedSales]) => (
+                <SalesDisplay
+                  title={date}
+                  sales={groupedSales}
+                  editing={editing()}
+                  onRemove={handleRemove}
+                />
+              )}
             </For>
           </Match>
         </Switch>
