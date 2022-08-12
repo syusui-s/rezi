@@ -59,24 +59,31 @@ type SaleStatsDisplayProps = {
 const SaleStatsDisplay: Component<SaleStatsDisplayProps> = (props) => {
   const { findProduct } = useCatalogs();
 
+  const totalAmount = createMemo(() => props.saleStats.reduce((sum, e) => sum + e.totalPrice, 0));
+
   return (
-    <div class="grid grid-cols-1 p-4 mb-4 rounded-md border md:grid-cols-2">
-      <For each={props.saleStats}>
-        {(stat) => {
-          const getProduct = () => findProduct(stat.catalogId, stat.productId);
-          return (
-            <div class="flex items-center py-1">
-              <div class="shrink-0 w-16 h-16">
-                <Show when={getProduct()}>{(product) => <ProductCover product={product} />}</Show>
+    <div>
+      <div class="py-2 text-xl text-center">{totalAmount()}円</div>
+      <div class="grid grid-cols-1 p-4 mb-4 rounded-md border md:grid-cols-2">
+        <For each={props.saleStats}>
+          {(stat) => {
+            const getProduct = () => findProduct(stat.catalogId, stat.productId);
+            return (
+              <div class="flex items-center py-1">
+                <div class="shrink-0 w-16 h-16">
+                  <Show when={getProduct()}>{(product) => <ProductCover product={product} />}</Show>
+                </div>
+                <div class="shrink-0 mr-8 w-16 text-4xl font-bold text-right">
+                  {stat.totalCount}
+                </div>
+                <div class="overflow-hidden text-2xl text-ellipsis whitespace-pre break-all">
+                  {stat.name}
+                </div>
               </div>
-              <div class="shrink-0 mr-8 w-16 text-4xl font-bold text-right">{stat.totalCount}</div>
-              <div class="overflow-hidden text-2xl text-ellipsis whitespace-pre break-all">
-                {stat.name}
-              </div>
-            </div>
-          );
-        }}
-      </For>
+            );
+          }}
+        </For>
+      </div>
     </div>
   );
 };
@@ -91,7 +98,7 @@ type SaleDisplayProps = {
 const SaleDisplay: Component<SaleDisplayProps> = (props) => {
   return (
     <div class="p-4 mb-4 rounded-md border">
-      <div class="text-xl font-bold text-center">{props.sale.soldAt.toLocaleTimeString()}</div>
+      <div class="p-2 text-xl font-bold text-center">{props.sale.soldAt.toLocaleTimeString()}</div>
       <ul class="rounded border">
         <For each={props.sale.items}>
           {(saleItem) => {
