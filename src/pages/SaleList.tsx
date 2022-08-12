@@ -63,7 +63,9 @@ const SaleStatsDisplay: Component<SaleStatsDisplayProps> = (props) => {
 
   return (
     <div>
-      <div class="py-2 text-xl text-center">{totalAmount()}円</div>
+      <div class="py-2 text-2xl text-center">
+        <PriceDisplay price={totalAmount()} />
+      </div>
       <div class="grid grid-cols-1 p-4 mb-4 rounded-md border md:grid-cols-2">
         <For each={props.saleStats}>
           {(stat) => {
