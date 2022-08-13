@@ -22,6 +22,7 @@ const ProductCover: Component<ProductCoverProps> = (props) => {
           src={props.product.imageUrl}
           class="object-contain max-w-full max-h-full"
           alt="頒布物の画像"
+          draggable={false}
         />
       </div>
     </Show>
