@@ -244,7 +244,7 @@ const CatalogView: Component = () => {
               <PriceDisplay price={totalPrice()} />
             </div>
           </div>
-          <div class="flex gap-2 justify-between items-center w-full h-9 sm:h-12">
+          <div class="flex gap-2 justify-between items-center w-full h-12 sm:h-16">
             <button
               type="button"
               class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
