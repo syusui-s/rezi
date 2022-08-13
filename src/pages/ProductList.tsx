@@ -254,7 +254,7 @@ const CatalogView: Component = () => {
             </button>
             <button
               type="button"
-              class="w-32 h-full text-lg text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
+              class="w-32 h-full text-xl text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
               disabled={cart().isEmpty()}
               onClick={handleRegister}
             >
