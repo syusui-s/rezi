@@ -228,43 +228,53 @@ const CatalogView: Component = () => {
     </Show>
   );
 
-  const cartDisplay = (
-    <Show when={!editing() && getCatalog() != null}>
-      <div
-        class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
-        style={{ 'box-shadow': '0 2px 10px rgba(0,0,0,0.2)', 'max-height': '40vh' }}
-      >
-        <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
-          <For each={cart().content()}>{cartItemDisplay}</For>
-        </div>
-        <div class="flex flex-col flex-auto justify-end items-end md:px-2 md:h-full">
-          <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
-            <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
-            <div class="text-3xl text-right md:text-5xl">
-              <PriceDisplay price={totalPrice()} />
+  const cartDisplay = () => {
+    const [showComplete, setShowComplete] = createSignal(false);
+
+    return (
+      <Show when={!editing() && getCatalog() != null}>
+        <div
+          class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
+          style={{ 'box-shadow': '0 2px 10px rgba(0,0,0,0.2)', 'max-height': '40vh' }}
+        >
+          <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
+            <For each={cart().content()}>{cartItemDisplay}</For>
+          </div>
+          <div class="flex flex-col flex-auto justify-end items-end md:px-2 md:h-full">
+            <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
+              <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
+              <div class="text-3xl text-right md:text-5xl">
+                <PriceDisplay price={totalPrice()} />
+              </div>
+            </div>
+            <div class="flex gap-2 justify-between items-center w-full h-12 sm:h-16">
+              <button
+                type="button"
+                class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
+                onClick={() => clearCart()}
+              >
+                クリア
+              </button>
+              <button
+                type="button"
+                class="w-32 h-full text-xl text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
+                disabled={cart().isEmpty() || showComplete()}
+                onClick={() => {
+                  handleRegister();
+                  setShowComplete(true);
+                  setTimeout(() => setShowComplete(false), 500);
+                }}
+              >
+                <Show when={showComplete()} fallback="会計">
+                  ✓
+                </Show>
+              </button>
             </div>
           </div>
-          <div class="flex gap-2 justify-between items-center w-full h-12 sm:h-16">
-            <button
-              type="button"
-              class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
-              onClick={() => clearCart()}
-            >
-              クリア
-            </button>
-            <button
-              type="button"
-              class="w-32 h-full text-xl text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
-              disabled={cart().isEmpty()}
-              onClick={handleRegister}
-            >
-              会計
-            </button>
-          </div>
         </div>
-      </div>
-    </Show>
-  );
+      </Show>
+    );
+  };
 
   const productDisplay = (product: Product) => {
     const saleStat = () => saleStats().get(product.id);
@@ -326,7 +336,7 @@ const CatalogView: Component = () => {
         }
       >
         <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
-          {cartDisplay}
+          {cartDisplay()}
           {productsDisplay}
         </div>
       </AppLayout>
