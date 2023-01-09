@@ -1,9 +1,9 @@
-import { createSignal, createEffect, onMount } from 'solid-js';
 import type { Accessor } from 'solid-js';
 
 import Catalog from '@/models/Catalog';
 import Product from '@/models/Product';
 import generateId from '@/utils/generateId';
+import { createStorageWithSerializer, createSignalWithStorage } from '@/createSignalWithStorage';
 import { serializeCatalogs, deserializeCatalogs } from './serialize/catalog';
 
 export type UseCatalogs = {
@@ -19,32 +19,20 @@ export type UseCatalogs = {
 const LOCAL_STORAGE_KEY = 'ReziCatalogs';
 
 const defaultCatalogId = generateId();
-const defaultCatalogs = { [defaultCatalogId]: new Catalog(defaultCatalogId, 'カタログ', {}) };
+const defaultCatalogs = { [defaultCatalogId]: Catalog.create(defaultCatalogId, 'カタログ') };
+
+const catalogsStorage = createStorageWithSerializer<Record<string, Catalog>>(
+  () => window.localStorage,
+  serializeCatalogs,
+  deserializeCatalogs,
+);
 
 const useCatalogs = (): UseCatalogs => {
-  const [loaded, setLoaded] = createSignal<boolean>(false);
-  const [catalogs, setCatalogs] = createSignal<Record<string, Catalog>>(defaultCatalogs);
-
-  onMount(() => {
-    const lastCatalogs = globalThis.localStorage.getItem(LOCAL_STORAGE_KEY);
-
-    if (lastCatalogs === null) {
-      setLoaded(true);
-      return;
-    }
-
-    const deserialized = deserializeCatalogs(lastCatalogs);
-    if (deserialized != null) {
-      setCatalogs(deserialized);
-    }
-    setLoaded(true);
-  });
-
-  createEffect(() => {
-    if (loaded()) {
-      globalThis.localStorage.setItem(LOCAL_STORAGE_KEY, serializeCatalogs(catalogs()));
-    }
-  });
+  const [catalogs, setCatalogs] = createSignalWithStorage<Record<string, Catalog>>(
+    LOCAL_STORAGE_KEY,
+    defaultCatalogs,
+    catalogsStorage,
+  );
 
   const findCatalog = (catalogId: string): Catalog | undefined => {
     return catalogs()[catalogId];

@@ -7,6 +7,7 @@ import SaleItem from '@/models/SaleItem';
 import Catalog from '@/models/Catalog';
 import useCatalogs from '@/useCatalogs';
 import generateId from '@/utils/generateId';
+import { createStorageWithSerializer, createSignalWithStorage } from '@/createSignalWithStorage';
 import { deserializeSales, serializeSales } from '@/serialize/sale';
 
 export type UseSales = {
@@ -17,32 +18,17 @@ export type UseSales = {
 
 const LOCAL_STORAGE_KEY = 'ReziSales';
 
-const [sales, setSales] = createSignal<Sale[]>([]);
+const salesStorage = createStorageWithSerializer<Sale[]>(
+  () => window.localStorage,
+  serializeSales,
+  deserializeSales,
+);
+
+const [sales, setSales] = createSignalWithStorage<Sale[]>(LOCAL_STORAGE_KEY, [], salesStorage);
 
 const useSales = (): UseSales => {
   const [loaded, setLoaded] = createSignal<boolean>(false);
   const { findProduct } = useCatalogs();
-
-  onMount(() => {
-    const data = globalThis.localStorage.getItem(LOCAL_STORAGE_KEY);
-
-    if (data === null) {
-      setLoaded(true);
-      return;
-    }
-
-    const deserialized = deserializeSales(data);
-    if (deserialized != null) {
-      setSales(deserialized);
-    }
-    setLoaded(true);
-  });
-
-  createEffect(() => {
-    if (loaded()) {
-      globalThis.localStorage.setItem(LOCAL_STORAGE_KEY, serializeSales(sales()));
-    }
-  });
 
   const register = (catalog: Catalog, cart: Cart) => {
     const saleItems = cart
