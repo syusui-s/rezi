@@ -1,4 +1,4 @@
-import { createSignal, onMount, createEffect } from 'solid-js';
+import { createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js';
 
 import Cart from '@/models/Cart';
@@ -27,7 +27,6 @@ const salesStorage = createStorageWithSerializer<Sale[]>(
 const [sales, setSales] = createSignalWithStorage<Sale[]>(LOCAL_STORAGE_KEY, [], salesStorage);
 
 const useSales = (): UseSales => {
-  const [loaded, setLoaded] = createSignal<boolean>(false);
   const { findProduct } = useCatalogs();
 
   const register = (catalog: Catalog, cart: Cart) => {

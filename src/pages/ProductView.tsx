@@ -1,6 +1,6 @@
 import { Show } from 'solid-js';
 import type { Component } from 'solid-js';
-import { Link, useNavigate, useParams } from 'solid-app-router';
+import { Link, useNavigate, useParams } from '@solidjs/router';
 
 import Product from '@/models/Product';
 import AppLayout from '@/components/AppLayout';

@@ -1,6 +1,6 @@
 import { For, Show, createSignal, createMemo } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
-import { Link, useNavigate, useParams } from 'solid-app-router';
+import { Link, useNavigate, useParams } from '@solidjs/router';
 
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
@@ -21,7 +21,7 @@ import useSales from '@/useSales';
 const AddItemIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="w-6 h-6"
+    class="h-6 w-6"
     fill="none"
     view-box="0 0 24 24"
     stroke="currentColor"
@@ -36,11 +36,11 @@ const AddItemIcon = () => (
 );
 
 const QuantityCubes: Component<{ quantity: number }> = (props) => (
-  <div class="grid grid-cols-5 gap-1 w-20 sm:gap-2 lg:w-32">
+  <div class="grid w-20 grid-cols-5 gap-1 sm:gap-2 lg:w-32">
     <For each={Array(props.quantity).splice(0, 10)}>
       {() => (
         <div
-          class="w-3 h-3 bg-white md:w-4 md:h-4"
+          class="h-3 w-3 bg-white md:h-4 md:w-4"
           style={{ 'box-shadow': '2px 2px 2px rgba(0,0,0,0.7)' }}
         />
       )}
@@ -86,7 +86,7 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
   const quantityDisplay = (
     <Show when={props.quantity > 0}>
       <div
-        class="flex absolute flex-col flex-nowrap justify-center items-center w-full h-full"
+        class="absolute flex h-full w-full flex-col flex-nowrap items-center justify-center"
         style={{ background: 'rgba(0,0,0,0.4)' }}
       >
         <Show
@@ -108,21 +108,21 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
 
   return (
     <div
-      class="p-2 bg-white hover:bg-zinc-50 rounded border-2 border-white shadow-md cursor-pointer touch-manipulation select-none md:px-4"
+      class="cursor-pointer touch-manipulation select-none rounded border-2 border-white bg-white p-2 shadow-md hover:bg-zinc-50 md:px-4"
       classList={{ 'border-zinc-200': props.quantity > 0 }}
       role="button"
       tabIndex="0"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      <div class="aspect-square object-cover relative bg-zinc-200">
+      <div class="relative aspect-square bg-zinc-200 object-cover">
         <Show when={!props.editing}>{quantityDisplay}</Show>
         <ProductCover product={props.product} />
       </div>
-      <div class="overflow-hidden text-xs text-ellipsis whitespace-nowrap md:text-base">
+      <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xs md:text-base">
         {props.product.name}
       </div>
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div class="text-base font-bold leading-5 sm:text-lg">
           <PriceDisplay price={props.product.price} />
         </div>
@@ -154,27 +154,27 @@ type CartItemDisplayProps = {
 const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
   return (
     <div
-      class="flex items-center h-8 border-b"
+      class="flex h-8 items-center border-b"
       classList={{ 'text-zinc-300': props.cartItem.quantity === 0 }}
     >
-      <div class="overflow-hidden flex-auto px-2 w-full text-lg text-ellipsis whitespace-nowrap">
+      <div class="w-full flex-auto overflow-hidden text-ellipsis whitespace-nowrap px-2 text-lg">
         {props.product.name}
       </div>
       <div class="text-base">
         <PriceDisplay price={props.product.price} />
       </div>
       <div class="flex items-center">
-        <div class="mx-4 w-8 font-mono text-2xl font-bold text-center">
+        <div class="mx-4 w-8 text-center font-mono text-2xl font-bold">
           {props.cartItem.quantity}
         </div>
         <button
-          class="py-1 w-12 h-full font-mono text-xl hover:bg-zinc-100 focus:bg-zinc-200 touch-manipulation select-none"
+          class="h-full w-12 touch-manipulation select-none py-1 font-mono text-xl hover:bg-zinc-100 focus:bg-zinc-200"
           onClick={() => props.removeFromCart(props.cartItem.productId)}
         >
           -
         </button>
         <button
-          class="py-1 w-12 h-full font-mono text-xl hover:bg-zinc-100 focus:bg-zinc-200 touch-manipulation select-none"
+          class="h-full w-12 touch-manipulation select-none py-1 font-mono text-xl hover:bg-zinc-100 focus:bg-zinc-200"
           onClick={() => props.addToCart(props.cartItem.productId)}
         >
           +
@@ -216,8 +216,8 @@ const CatalogView: Component = () => {
   };
 
   const cartItemDisplay = (cartItem: CartItem) => (
-    <Show when={getProduct(cartItem.productId)}>
-      {(product) => (
+    <Show<Product> when={getProduct(cartItem.productId)}>
+      {(product: Product) => (
         <CartItemDisplay
           product={product}
           cartItem={cartItem}
@@ -234,30 +234,30 @@ const CatalogView: Component = () => {
     return (
       <Show when={!editing() && getCatalog() != null}>
         <div
-          class="container flex fixed top-0 z-10 flex-col p-2 mt-10 w-full h-60 bg-white md:top-auto md:bottom-0 md:flex-row md:justify-between md:items-center md:px-0 md:h-56 xl:w-8/12"
+          class="container fixed top-0 z-10 mt-10 flex h-60 w-full flex-col bg-white p-2 md:top-auto md:bottom-0 md:h-56 md:flex-row md:items-center md:justify-between md:px-0 xl:w-8/12"
           style={{ 'box-shadow': '0 2px 10px rgba(0,0,0,0.2)', 'max-height': '40vh' }}
         >
-          <div class="overflow-y-scroll h-full border-b touch-pan-y md:basis-2/3 md:border-r">
+          <div class="h-full touch-pan-y overflow-y-scroll border-b md:basis-2/3 md:border-r">
             <For each={cart().content()}>{cartItemDisplay}</For>
           </div>
-          <div class="flex flex-col flex-auto justify-end items-end md:px-2 md:h-full">
-            <div class="flex gap-4 items-center py-2 md:flex-col md:gap-0 md:items-end">
+          <div class="flex flex-auto flex-col items-end justify-end md:h-full md:px-2">
+            <div class="flex items-center gap-4 py-2 md:flex-col md:items-end md:gap-0">
               <div class="text-base text-zinc-700 md:text-2xl">{totalQuantity()} 点</div>
-              <div class="text-3xl text-right md:text-5xl">
+              <div class="text-right text-3xl md:text-5xl">
                 <PriceDisplay price={totalPrice()} />
               </div>
             </div>
-            <div class="flex gap-2 justify-between items-center w-full h-12 sm:h-16">
+            <div class="flex h-12 w-full items-center justify-between gap-2 sm:h-16">
               <button
                 type="button"
-                class="w-16 h-full text-base text-white bg-zinc-500 hover:bg-zinc-600 shadow touch-manipulation sm:p-2"
+                class="h-full w-16 touch-manipulation bg-zinc-500 text-base text-white shadow hover:bg-zinc-600 sm:p-2"
                 onClick={() => clearCart()}
               >
                 クリア
               </button>
               <button
                 type="button"
-                class="w-32 h-full text-xl text-white disabled:text-zinc-400 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-800 shadow touch-manipulation sm:p-2 md:text-2xl"
+                class="h-full w-32 touch-manipulation bg-blue-500 text-xl text-white shadow hover:bg-blue-700 disabled:bg-blue-800 disabled:text-zinc-400 sm:p-2 md:text-2xl"
                 disabled={cart().isEmpty() || showComplete()}
                 onClick={() => {
                   handleRegister();
@@ -296,7 +296,7 @@ const CatalogView: Component = () => {
   };
 
   const productsDisplay = (
-    <div class="grid grid-cols-4 gap-2 my-4 touch-pan-y md:grid-cols-5 md:gap-4">
+    <div class="my-4 grid touch-pan-y grid-cols-4 gap-2 md:grid-cols-5 md:gap-4">
       <For
         each={getCatalog()?.getProductArray() ?? []}
         fallback={<div>頒布物がまだ登録されていません</div>}
@@ -324,7 +324,7 @@ const CatalogView: Component = () => {
               </button>
             }
           >
-            <div class="flex flex-row gap-4 items-center">
+            <div class="flex flex-row items-center gap-4">
               <Link href={`/catalogs/${catalogId()}/products/new`} class="navigationButton">
                 <AddItemIcon />
               </Link>

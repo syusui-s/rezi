@@ -75,7 +75,7 @@ const About = () => {
           参考訳
         </a>
 
-        <pre class="overflow-scroll p-4 max-h-96 bg-zinc-100 rounded">
+        <pre class="max-h-96 overflow-scroll rounded bg-zinc-100 p-4">
           {packageInfo()?.self.licenseText}
         </pre>
 
@@ -88,7 +88,7 @@ const About = () => {
                 <h3 class="my-4 text-xl">
                   {p.name}@{p.version} ({p.licenseSpdx})
                 </h3>
-                <pre class="overflow-scroll p-4 max-h-96 bg-zinc-100 rounded">{p.licenseText}</pre>
+                <pre class="max-h-96 overflow-scroll rounded bg-zinc-100 p-4">{p.licenseText}</pre>
               </>
             );
           }}

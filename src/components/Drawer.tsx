@@ -16,7 +16,7 @@ const Drawer: Component<DrawerProps> = (props) => {
       <button
         title="Close drawer"
         type="button"
-        class="p-2 h-full hover:bg-zinc-100 active:bg-zinc-200 md:py-4"
+        class="h-full p-2 hover:bg-zinc-100 active:bg-zinc-200 md:py-4"
         onClick={() => setOpen(true)}
       >
         {props.buttonContent}

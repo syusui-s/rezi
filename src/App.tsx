@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Routes, Route, Navigate } from 'solid-app-router';
+import { Routes, Route, Navigate } from '@solidjs/router';
 
 import CatalogList from '@/pages/CatalogList';
 import CatalogEdit from '@/pages/CatalogEdit';

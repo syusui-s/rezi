@@ -8,11 +8,12 @@ import ProductCover from '@/components/ProductCover';
 import useSales from '@/useSales';
 import useCatalogs from '@/useCatalogs';
 import type Sale from '@/models/Sale';
+import type Product from '@/models/Product';
 import type { SaleStat } from '@/models/SaleStat';
 import { statSalesByProduct, sortStatsByCountDesc, groupStatsByCatalog } from '@/models/SaleStat';
 
 const GroupingMethods = ['daily', 'catalog'] as const;
-type GroupingMethod = typeof GroupingMethods[number];
+type GroupingMethod = (typeof GroupingMethods)[number];
 
 const groupSalesByDate = (sales: Sale[]) => {
   const dateSales = new Map<string, Sale[]>();
@@ -63,22 +64,24 @@ const SaleStatsDisplay: Component<SaleStatsDisplayProps> = (props) => {
 
   return (
     <div>
-      <div class="py-2 text-2xl text-center">
+      <div class="py-2 text-center text-2xl">
         <PriceDisplay price={totalAmount()} />
       </div>
-      <div class="grid grid-cols-1 p-4 mb-4 rounded-md border md:grid-cols-2">
+      <div class="mb-4 grid grid-cols-1 rounded-md border p-4 md:grid-cols-2">
         <For each={props.saleStats}>
           {(stat) => {
             const getProduct = () => findProduct(stat.catalogId, stat.productId);
             return (
               <div class="flex items-center py-1">
-                <div class="shrink-0 w-16 h-16">
-                  <Show when={getProduct()}>{(product) => <ProductCover product={product} />}</Show>
+                <div class="h-16 w-16 shrink-0">
+                  <Show<Product> when={getProduct()}>
+                    {(product: Product) => <ProductCover product={product} />}
+                  </Show>
                 </div>
-                <div class="shrink-0 mr-8 w-16 text-4xl font-bold text-right">
+                <div class="mr-8 w-16 shrink-0 text-right text-4xl font-bold">
                   {stat.totalCount}
                 </div>
-                <div class="overflow-hidden text-2xl text-ellipsis whitespace-pre break-all">
+                <div class="overflow-hidden text-ellipsis whitespace-pre break-all text-2xl">
                   {stat.name}
                 </div>
               </div>
@@ -99,13 +102,13 @@ type SaleDisplayProps = {
 
 const SaleDisplay: Component<SaleDisplayProps> = (props) => {
   return (
-    <div class="p-4 mb-4 rounded-md border">
-      <div class="p-2 text-xl font-bold text-center">{props.sale.soldAt.toLocaleTimeString()}</div>
+    <div class="mb-4 rounded-md border p-4">
+      <div class="p-2 text-center text-xl font-bold">{props.sale.soldAt.toLocaleTimeString()}</div>
       <ul class="rounded border">
         <For each={props.sale.items}>
           {(saleItem) => {
             return (
-              <li class="flex justify-between items-center p-1 border-b last:border-none">
+              <li class="flex items-center justify-between border-b p-1 last:border-none">
                 <div class="basis-3/4">{saleItem.name}</div>
                 <div class="flex-auto text-right">
                   <PriceDisplay price={saleItem.price} />
@@ -143,7 +146,7 @@ const SalesDisplay: Component<SalesDisplayProps> = (props) => {
 
   return (
     <>
-      <h2 class="pb-4 text-2xl font-bold text-center">{props.title}</h2>
+      <h2 class="pb-4 text-center text-2xl font-bold">{props.title}</h2>
       <SaleStatsDisplay saleStats={saleStats()} />
       <For each={props.sales}>
         {(sale) => (
@@ -195,7 +198,7 @@ const SaleList: Component = () => {
         </Show>
       }
     >
-      <div class="p-4 mb-4 rounded-md border">
+      <div class="mb-4 rounded-md border p-4">
         <div class="py-4">
           <GroupingMethodSelect value={groupingMethod()} onChange={setGroupingMethod} />
         </div>
@@ -210,7 +213,7 @@ const SaleList: Component = () => {
                     const title = () => findCatalog(catalogId)?.name ?? '削除されたカタログ';
                     return (
                       <div class="">
-                        <h2 class="pb-4 text-2xl font-bold text-center">{title()}</h2>
+                        <h2 class="pb-4 text-center text-2xl font-bold">{title()}</h2>
                         <SaleStatsDisplay saleStats={saleStats} />
                       </div>
                     );

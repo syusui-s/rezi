@@ -106,7 +106,7 @@ const ProductForm: Component<ProductInputProps> = (props) => {
         </Show>
       </div>
       <div class="py-3">
-        <button type="submit" class="py-2 px-4 font-bold text-white bg-blue-500 hover:bg-blue-700">
+        <button type="submit" class="bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700">
           登録
         </button>
       </div>
