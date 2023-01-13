@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from '@solidjs/router';
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
 import ProductCover from '@/components/ProductCover';
+import QuantityDisplay from '@/components/QuantityDisplay';
 import type Product from '@/models/Product';
 import CartItem from '@/models/CartItem';
 import { statSalesByProduct } from '@/models/SaleStat';
@@ -33,19 +34,6 @@ const AddItemIcon = () => (
       d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"
     />
   </svg>
-);
-
-const QuantityCubes: Component<{ quantity: number }> = (props) => (
-  <div class="grid w-20 grid-cols-5 gap-1 sm:gap-2 lg:w-32">
-    <For each={Array(props.quantity).splice(0, 10)}>
-      {() => (
-        <div
-          class="h-3 w-3 bg-white md:h-4 md:w-4"
-          style={{ 'box-shadow': '2px 2px 2px rgba(0,0,0,0.7)' }}
-        />
-      )}
-    </For>
-  </div>
 );
 
 type ProductDisplayProps = {
@@ -83,29 +71,6 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
     }
   };
 
-  const quantityDisplay = (
-    <Show when={props.quantity > 0}>
-      <div
-        class="absolute flex h-full w-full flex-col flex-nowrap items-center justify-center"
-        style={{ background: 'rgba(0,0,0,0.4)' }}
-      >
-        <Show
-          when={props.quantity <= 10}
-          fallback={
-            <div
-              class="font-mono text-4xl font-bold text-white sm:text-5xl md:text-6xl"
-              style={{ 'text-shadow': '1px 1px 4px #000' }}
-            >
-              {props.quantity}
-            </div>
-          }
-        >
-          <QuantityCubes quantity={props.quantity} />
-        </Show>
-      </div>
-    </Show>
-  );
-
   return (
     <div
       class="cursor-pointer touch-manipulation select-none rounded border-2 border-white bg-white p-2 shadow-md hover:bg-zinc-50 md:px-4"
@@ -116,7 +81,9 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       <div class="relative aspect-square bg-zinc-200 object-cover">
-        <Show when={!props.editing}>{quantityDisplay}</Show>
+        <Show when={!props.editing}>
+          <QuantityDisplay quantity={props.quantity} />
+        </Show>
         <ProductCover product={props.product} />
       </div>
       <div class="overflow-hidden text-ellipsis whitespace-nowrap text-xs md:text-base">
@@ -215,19 +182,6 @@ const CatalogView: Component = () => {
     clearCart();
   };
 
-  const cartItemDisplay = (cartItem: CartItem) => (
-    <Show<Product> when={getProduct(cartItem.productId)}>
-      {(product: Product) => (
-        <CartItemDisplay
-          product={product}
-          cartItem={cartItem}
-          addToCart={addToCart}
-          removeFromCart={removeFromCart}
-        />
-      )}
-    </Show>
-  );
-
   const cartDisplay = () => {
     const [showComplete, setShowComplete] = createSignal(false);
 
@@ -238,7 +192,20 @@ const CatalogView: Component = () => {
           style={{ 'box-shadow': '0 2px 10px rgba(0,0,0,0.2)', 'max-height': '40vh' }}
         >
           <div class="h-full touch-pan-y overflow-y-scroll border-b md:basis-2/3 md:border-r">
-            <For each={cart().content()}>{cartItemDisplay}</For>
+            <For each={cart().content()}>
+              {(cartItem: CartItem) => (
+                <Show<Product> when={getProduct(cartItem.productId)}>
+                  {(product: Product) => (
+                    <CartItemDisplay
+                      product={product}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                      removeFromCart={removeFromCart}
+                    />
+                  )}
+                </Show>
+              )}
+            </For>
           </div>
           <div class="flex flex-auto flex-col items-end justify-end md:h-full md:px-2">
             <div class="flex items-center gap-4 py-2 md:flex-col md:items-end md:gap-0">
@@ -276,32 +243,30 @@ const CatalogView: Component = () => {
     );
   };
 
-  const productDisplay = (product: Product) => {
-    const saleStat = () => saleStats().get(product.id);
-    return (
-      <ProductDisplay
-        catalogId={catalogId()}
-        product={product}
-        saleStat={saleStat()}
-        quantity={cart().find(product.id)?.quantity ?? 0}
-        addToCart={addToCart}
-        removeProduct={(productId) => {
-          const catalog = getCatalog();
-          if (catalog == null) return;
-          removeProduct(catalog.id, productId);
-        }}
-        editing={editing()}
-      />
-    );
-  };
-
   const productsDisplay = (
     <div class="my-4 grid touch-pan-y grid-cols-4 gap-2 md:grid-cols-5 md:gap-4">
       <For
         each={getCatalog()?.getProductArray() ?? []}
         fallback={<div>頒布物がまだ登録されていません</div>}
       >
-        {productDisplay}
+        {(product: Product) => {
+          const saleStat = () => saleStats().get(product.id);
+          return (
+            <ProductDisplay
+              catalogId={catalogId()}
+              product={product}
+              saleStat={saleStat()}
+              quantity={cart().find(product.id)?.quantity ?? 0}
+              addToCart={addToCart}
+              removeProduct={(productId) => {
+                const catalog = getCatalog();
+                if (catalog == null) return;
+                removeProduct(catalog.id, productId);
+              }}
+              editing={editing()}
+            />
+          );
+        }}
       </For>
     </div>
   );
