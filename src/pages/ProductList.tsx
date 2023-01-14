@@ -151,7 +151,7 @@ const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
   );
 };
 
-const CatalogView: Component = () => {
+const ProductList: Component = () => {
   const params = useParams();
 
   const catalogId = () => params.id;
@@ -309,4 +309,4 @@ const CatalogView: Component = () => {
   );
 };
 
-export default CatalogView;
+export default ProductList;

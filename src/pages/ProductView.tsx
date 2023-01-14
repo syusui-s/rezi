@@ -9,7 +9,7 @@ import NotFound from '@/pages/NotFound';
 import useCatalogs from '@/useCatalogs';
 import generateId from '@/utils/generateId';
 
-const ManageProduct: Component = () => {
+const ProductView: Component = () => {
   const navigate = useNavigate();
   const params = useParams();
 
@@ -61,4 +61,4 @@ const ManageProduct: Component = () => {
   );
 };
 
-export default ManageProduct;
+export default ProductView;
