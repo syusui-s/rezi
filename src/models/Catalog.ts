@@ -30,6 +30,19 @@ export default class Catalog {
     return this.products[productId];
   }
 
+  rearrangeProduct(productId: string, insertBeforeId: string): Catalog {
+    const entries = Array.from(Object.entries(this.products));
+    const productIndex = entries.findIndex(([id]) => id === productId);
+    const insertBeforeIndex = entries.findIndex(([id]) => id === insertBeforeId);
+    if (productIndex == null || insertBeforeIndex == null) return this;
+
+    const [productTuple] = entries.splice(productIndex, 1);
+    entries.splice(insertBeforeIndex, 0, productTuple);
+    const newProducts = Object.fromEntries(entries);
+
+    return new Catalog(this.id, this.name, newProducts);
+  }
+
   getProductArray(): Product[] {
     return Object.values(this.products);
   }

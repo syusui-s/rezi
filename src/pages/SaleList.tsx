@@ -74,7 +74,7 @@ const SaleStatsDisplay: Component<SaleStatsDisplayProps> = (props) => {
             return (
               <div class="flex items-center py-1">
                 <div class="h-16 w-16 shrink-0">
-                  <Show<Product> when={getProduct()}>
+                  <Show when={getProduct()} keyed>
                     {(product: Product) => <ProductCover product={product} />}
                   </Show>
                 </div>

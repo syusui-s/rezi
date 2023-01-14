@@ -1,6 +1,15 @@
-import { For, Show, createSignal, createMemo } from 'solid-js';
+import { For, Show, createSignal, createEffect, createMemo } from 'solid-js';
 import type { Component, JSX } from 'solid-js';
 import { Link, useNavigate, useParams } from '@solidjs/router';
+import {
+  DragDropProvider,
+  DragDropSensors,
+  SortableProvider,
+  createSortable,
+  closestCenter,
+  useDragDropContext,
+  DragEventHandler,
+} from '@thisbeyond/solid-dnd';
 
 import AppLayout from '@/components/AppLayout';
 import PriceDisplay from '@/components/PriceDisplay';
@@ -48,6 +57,7 @@ type ProductDisplayProps = {
 
 const ProductDisplay: Component<ProductDisplayProps> = (props) => {
   const navigate = useNavigate();
+  const sortable = createSortable(props.product.id);
 
   const handleClick = () => {
     if (props.editing) {
@@ -73,6 +83,11 @@ const ProductDisplay: Component<ProductDisplayProps> = (props) => {
 
   return (
     <div
+      // https://github.com/thisbeyond/solid-dnd/issues/60
+      // https://github.com/thisbeyond/solid-dnd/issues/68
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      use:sortable
       class="cursor-pointer touch-manipulation select-none rounded border-2 border-white bg-white p-2 shadow-md hover:bg-zinc-50 md:px-4"
       classList={{ 'border-zinc-200': props.quantity > 0 }}
       role="button"
@@ -157,7 +172,7 @@ const ProductList: Component = () => {
   const catalogId = () => params.id;
 
   const [editing, setEditing] = createSignal(false);
-  const { findCatalog, findProduct, removeProduct } = useCatalogs();
+  const { findCatalog, findProduct, removeProduct, rearrangeProduct } = useCatalogs();
 
   const getCatalog = () => {
     const id = catalogId();
@@ -194,7 +209,7 @@ const ProductList: Component = () => {
           <div class="h-full touch-pan-y overflow-y-scroll border-b md:basis-2/3 md:border-r">
             <For each={cart().content()}>
               {(cartItem: CartItem) => (
-                <Show<Product> when={getProduct(cartItem.productId)}>
+                <Show when={getProduct(cartItem.productId)} keyed>
                   {(product: Product) => (
                     <CartItemDisplay
                       product={product}
@@ -243,33 +258,62 @@ const ProductList: Component = () => {
     );
   };
 
-  const productsDisplay = (
-    <div class="my-4 grid touch-pan-y grid-cols-4 gap-2 md:grid-cols-5 md:gap-4">
-      <For
-        each={getCatalog()?.getProductArray() ?? []}
-        fallback={<div>頒布物がまだ登録されていません</div>}
-      >
-        {(product: Product) => {
-          const saleStat = () => saleStats().get(product.id);
-          return (
-            <ProductDisplay
-              catalogId={catalogId()}
-              product={product}
-              saleStat={saleStat()}
-              quantity={cart().find(product.id)?.quantity ?? 0}
-              addToCart={addToCart}
-              removeProduct={(productId) => {
-                const catalog = getCatalog();
-                if (catalog == null) return;
-                removeProduct(catalog.id, productId);
-              }}
-              editing={editing()}
-            />
-          );
+  const productDisplay = (product: Product) => {
+    const saleStat = () => saleStats().get(product.id);
+
+    return (
+      <ProductDisplay
+        catalogId={catalogId()}
+        product={product}
+        saleStat={saleStat()}
+        quantity={cart().find(product.id)?.quantity ?? 0}
+        addToCart={addToCart}
+        removeProduct={(productId) => {
+          const catalog = getCatalog();
+          if (catalog == null) return;
+          removeProduct(catalog.id, productId);
         }}
-      </For>
-    </div>
-  );
+        editing={editing()}
+      />
+    );
+  };
+
+  const productsDisplay = () => {
+    const products = () => getCatalog()?.getProductArray() ?? [];
+    const productIds = () => products().map((e) => e.id);
+
+    const onDragEnd: DragEventHandler = ({ draggable, droppable }) => {
+      if (draggable && droppable) {
+        const productId = draggable?.id as string;
+        const insertBeforeId = droppable?.id as string;
+        if (catalogId() != null) rearrangeProduct(catalogId(), productId, insertBeforeId);
+      }
+    };
+
+    return (
+      <div class="my-4 grid touch-pan-y grid-cols-4 gap-2 md:grid-cols-5 md:gap-4">
+        <DragDropProvider onDragEnd={onDragEnd} collisionDetector={closestCenter}>
+          <Show when={editing()}>
+            <DragDropSensors />
+          </Show>
+          <SortableProvider ids={productIds()}>
+            <For
+              each={products()}
+              fallback={
+                <div>
+                  頒布物がまだ登録されていません。
+                  <br />
+                  右上の追加ボタンから追加しましょう。
+                </div>
+              }
+            >
+              {productDisplay}
+            </For>
+          </SortableProvider>
+        </DragDropProvider>
+      </div>
+    );
+  };
 
   return (
     <Show when={getCatalog() != null} fallback={<NotFound />}>

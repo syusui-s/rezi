@@ -8,6 +8,9 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  optimizeDeps: {
+    extensions: ['jsx'],
+  },
   build: {
     target: 'esnext',
   },

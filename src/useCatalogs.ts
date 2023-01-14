@@ -14,6 +14,7 @@ export type UseCatalogs = {
   saveProduct: (catalogId: string, product: Product) => void;
   removeProduct: (catalogId: string, productId: string) => void;
   findProduct: (catalogId: string, productId: string) => Product | undefined;
+  rearrangeProduct: (catalogId: string, productId: string, insertBeforeId: string) => void;
 };
 
 const LOCAL_STORAGE_KEY = 'ReziCatalogs';
@@ -67,6 +68,10 @@ const useCatalogs = (): UseCatalogs => {
   const findProduct = (catalogId: string, productId: string): Product | undefined =>
     catalogs()[catalogId]?.findProduct(productId);
 
+  const rearrangeProduct = (catalogId: string, productId: string, insertBeforeId: string) => {
+    updateCatalog(catalogId, (catalog) => catalog.rearrangeProduct(productId, insertBeforeId));
+  };
+
   return {
     catalogs,
     findCatalog,
@@ -75,6 +80,7 @@ const useCatalogs = (): UseCatalogs => {
     saveProduct,
     removeProduct,
     findProduct,
+    rearrangeProduct,
   };
 };
 
