@@ -17,12 +17,12 @@ const ProductView: Component = () => {
 
   const getCatalog = () => (params.catalogId != null ? findCatalog(params.catalogId) : undefined);
 
-  const isCreatePage = () => params.id == null;
+  const isCreatePage = () => params.productId == null;
 
   const getProduct = () => {
     const catalog = getCatalog();
     if (catalog == null) return undefined;
-    return findProduct(catalog.id, params.id);
+    return findProduct(catalog.id, params.productId);
   };
 
   const handleProductFormSubmit = ({

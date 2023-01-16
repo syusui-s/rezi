@@ -3,6 +3,7 @@ import type { Accessor } from 'solid-js';
 import Catalog from '@/models/Catalog';
 import Product from '@/models/Product';
 import generateId from '@/utils/generateId';
+import rearrangeObjectEntry from '@/utils/rearrangeObjectEntry';
 import { createStorageWithSerializer, createSignalWithStorage } from '@/createSignalWithStorage';
 import { serializeCatalogs, deserializeCatalogs } from './serialize/catalog';
 
@@ -11,6 +12,7 @@ export type UseCatalogs = {
   findCatalog: (catalogId: string) => Catalog | undefined;
   saveCatalog: (catalog: Catalog) => void;
   removeCatalog: (catalogId: string) => void;
+  rearrangeCatalog: (catalogId: string, insertBeforeId: string) => void;
   saveProduct: (catalogId: string, product: Product) => void;
   removeProduct: (catalogId: string, productId: string) => void;
   findProduct: (catalogId: string, productId: string) => Product | undefined;
@@ -57,6 +59,11 @@ const useCatalogs = (): UseCatalogs => {
     setCatalogs(newCatalogs);
   };
 
+  const rearrangeCatalog = (catalogId: string, insertBeforeId: string) => {
+    const newCatalogs = rearrangeObjectEntry(catalogs(), catalogId, insertBeforeId);
+    setCatalogs(newCatalogs);
+  };
+
   const saveProduct = (catalogId: string, product: Product) => {
     updateCatalog(catalogId, (catalog) => catalog.saveProduct(product));
   };
@@ -77,6 +84,7 @@ const useCatalogs = (): UseCatalogs => {
     findCatalog,
     saveCatalog,
     removeCatalog,
+    rearrangeCatalog,
     saveProduct,
     removeProduct,
     findProduct,

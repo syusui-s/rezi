@@ -7,7 +7,6 @@ import {
   SortableProvider,
   createSortable,
   closestCenter,
-  useDragDropContext,
   DragEventHandler,
 } from '@thisbeyond/solid-dnd';
 
@@ -169,7 +168,7 @@ const CartItemDisplay: Component<CartItemDisplayProps> = (props) => {
 const ProductList: Component = () => {
   const params = useParams();
 
-  const catalogId = () => params.id;
+  const catalogId = () => params.catalogId;
 
   const [editing, setEditing] = createSignal(false);
   const { findCatalog, findProduct, removeProduct, rearrangeProduct } = useCatalogs();
@@ -346,7 +345,7 @@ const ProductList: Component = () => {
       >
         <div class="pt-52 pb-56 md:pt-0 md:pb-56" classList={{ 'pt-0': editing() }}>
           {cartDisplay()}
-          {productsDisplay}
+          {productsDisplay()}
         </div>
       </AppLayout>
     </Show>

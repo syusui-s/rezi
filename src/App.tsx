@@ -13,10 +13,10 @@ const App: Component = () => (
   <Routes>
     <Route path="/catalogs" element={<CatalogList />} />
     <Route path="/catalogs/new" element={<CatalogEdit />} />
-    <Route path="/catalogs/:id" element={<CatalogEdit />} />
-    <Route path="/catalogs/:id/products" element={<ProductList />} />
+    <Route path="/catalogs/:catalogId/products" element={<ProductList />} />
     <Route path="/catalogs/:catalogId/products/new" element={<ProductView />} />
-    <Route path="/catalogs/:catalogId/products/:id" element={<ProductView />} />
+    <Route path="/catalogs/:catalogId/products/:productId" element={<ProductView />} />
+    <Route path="/catalogs/:catalogId" element={<CatalogEdit />} />
     <Route path="/sales" element={<SaleList />} />
     <Route path="/about" element={<About />} />
     <Route path="/" element={<Navigate href="/catalogs" />} />

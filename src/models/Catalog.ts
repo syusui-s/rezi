@@ -1,3 +1,4 @@
+import rearrangeObjectEntry from '@/utils/rearrangeObjectEntry';
 import Product from './Product';
 
 /**
@@ -31,15 +32,7 @@ export default class Catalog {
   }
 
   rearrangeProduct(productId: string, insertBeforeId: string): Catalog {
-    const entries = Array.from(Object.entries(this.products));
-    const productIndex = entries.findIndex(([id]) => id === productId);
-    const insertBeforeIndex = entries.findIndex(([id]) => id === insertBeforeId);
-    if (productIndex == null || insertBeforeIndex == null) return this;
-
-    const [productTuple] = entries.splice(productIndex, 1);
-    entries.splice(insertBeforeIndex, 0, productTuple);
-    const newProducts = Object.fromEntries(entries);
-
+    const newProducts = rearrangeObjectEntry(this.products, productId, insertBeforeId);
     return new Catalog(this.id, this.name, newProducts);
   }
 

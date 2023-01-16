@@ -17,12 +17,12 @@ const CatalogEdit: Component = () => {
 
   const getCatalog = () => (params.catalogId != null ? findCatalog(params.catalogId) : undefined);
 
-  const isCreatePage = () => params.id == null;
+  const isCreatePage = () => params.catalogId == null;
 
   const handleCatalogFormSubmit = ({ name }: { name: string }) => {
     const catalog = getCatalog();
     const id = catalog?.id ?? generateId();
-    const newCatalog = Catalog.create(id, name);
+    const newCatalog = new Catalog(id, name, catalog?.products ?? {});
     saveCatalog(newCatalog);
     navigate(`/catalogs/${id}/products`);
   };
@@ -30,7 +30,7 @@ const CatalogEdit: Component = () => {
   return (
     <Show when={isCreatePage() || getCatalog() != null} fallback={<NotFound />}>
       <AppLayout
-        titleElement="カタログ登録"
+        titleElement={isCreatePage() ? 'カタログ登録' : 'カタログ更新'}
         prevElement={
           <Link href={`/catalogs`} class="navigationButton">
             ←
