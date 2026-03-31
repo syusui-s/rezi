@@ -11,7 +11,12 @@ import type Sale from '@/models/Sale';
 import type Product from '@/models/Product';
 import type { SaleStat } from '@/models/SaleStat';
 import { statSalesByProduct, sortStatsByCountDesc, groupStatsByCatalog } from '@/models/SaleStat';
-import { generateSalesCsv, downloadCsv, formatDateTimeForFilename } from '@/utils/csvExport';
+import {
+  generateSalesCsv,
+  downloadCsv,
+  formatDateTimeForFilename,
+  sanitizeFilename,
+} from '@/utils/csvExport';
 
 const GroupingMethods = ['daily', 'catalog'] as const;
 type GroupingMethod = (typeof GroupingMethods)[number];
@@ -230,7 +235,7 @@ const SaleList: Component = () => {
     });
     const csv = generateSalesCsv(filteredSalesWithItems, catalogNameResolver);
     const exportTime = formatDateTimeForFilename(new Date());
-    downloadCsv(csv, `rezi-sales-${catalogName}_${exportTime}.csv`);
+    downloadCsv(csv, `rezi-sales-${sanitizeFilename(catalogName)}_${exportTime}.csv`);
   };
 
   const handleRemove = (saleId: string) => {

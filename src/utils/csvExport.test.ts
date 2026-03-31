@@ -7,6 +7,7 @@ import {
   formatDateTime,
   formatDateTimeForFilename,
   generateSalesCsv,
+  sanitizeFilename,
 } from './csvExport';
 
 describe('escapeCsvField', () => {
@@ -28,6 +29,13 @@ describe('escapeCsvField', () => {
 
   it('should handle empty string', () => {
     assert.strictEqual(escapeCsvField(''), '');
+  });
+
+  it('should prefix single quote for formula-dangerous characters', () => {
+    assert.strictEqual(escapeCsvField('=SUM(A1)'), "'=SUM(A1)");
+    assert.strictEqual(escapeCsvField('+cmd'), "'+cmd");
+    assert.strictEqual(escapeCsvField('-value'), "'-value");
+    assert.strictEqual(escapeCsvField('@import'), "'@import");
   });
 });
 
@@ -106,5 +114,21 @@ describe('generateSalesCsv', () => {
     assert.strictEqual(lines.length, 3);
     assert.strictEqual(lines[1], '2026-02-22 10:00:00,カタログA,本A,500,1,500');
     assert.strictEqual(lines[2], '2026-02-22 11:00:00,カタログA,本B,300,3,900');
+  });
+});
+
+describe('sanitizeFilename', () => {
+  it('should return the name as-is when no special characters', () => {
+    assert.strictEqual(sanitizeFilename('カタログA'), 'カタログA');
+  });
+
+  it('should replace invalid filename characters with underscores', () => {
+    assert.strictEqual(sanitizeFilename('a/b\\c:d'), 'a_b_c_d');
+    assert.strictEqual(sanitizeFilename('a*b?c"d'), 'a_b_c_d');
+    assert.strictEqual(sanitizeFilename('a<b>c|d'), 'a_b_c_d');
+  });
+
+  it('should return underscore for empty string', () => {
+    assert.strictEqual(sanitizeFilename(''), '_');
   });
 });

@@ -2,11 +2,17 @@ import type Sale from '../models/Sale';
 
 const CSV_HEADER = '日時,カタログ名,商品名,単価,数量,小計';
 
+const FORMULA_PREFIXES = ['=', '+', '-', '@', '\t', '\r'];
+
 export const escapeCsvField = (field: string): string => {
-  if (field.includes(',') || field.includes('"') || field.includes('\n')) {
-    return `"${field.replace(/"/g, '""')}"`;
+  let sanitized = field;
+  if (sanitized.length > 0 && FORMULA_PREFIXES.includes(sanitized[0])) {
+    sanitized = `'${sanitized}`;
   }
-  return field;
+  if (sanitized.includes(',') || sanitized.includes('"') || sanitized.includes('\n')) {
+    return `"${sanitized.replace(/"/g, '""')}"`;
+  }
+  return sanitized;
 };
 
 const padZero = (n: number): string => String(n).padStart(2, '0');
@@ -52,6 +58,11 @@ export const generateSalesCsv = (
   });
 
   return [CSV_HEADER, ...dataRows].join('\n');
+};
+
+export const sanitizeFilename = (name: string): string => {
+  // eslint-disable-next-line no-control-regex
+  return name.replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').trim() || '_';
 };
 
 export const downloadCsv = (csvContent: string, filename: string): void => {
